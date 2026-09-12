@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>展会项目看板 V1.4.4</title>
+<style>
+:root{--blue:#2563eb;--blue-2:#3f8cff;--grad-blue:linear-gradient(135deg,#2563eb,#38bdf8);--green:#10b981;--orange:#f59e0b;--purple:#8b5cf6;--red:#ef4444;--ink:#10233f;--muted:#64748b;--line:#e6edf7;--bg:#eef4fb}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+/* ===== 侧边栏 ===== */
+.sidebar{width:200px;flex:0 0 200px;min-height:100vh;position:sticky;top:0;background:linear-gradient(180deg,#0c1e42 0%,#122c5e 55%,#16356f 100%);border-right:0;box-shadow:4px 0 20px rgba(12,30,66,.14);z-index:5}
+.brand{height:72px;display:flex;align-items:center;gap:11px;padding:0 20px;color:#fff;font-size:22px;font-weight:800;letter-spacing:.5px}
+.brandLogo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#22d3ee);display:flex;align-items:center;justify-content:center;flex:0 0 36px;box-shadow:0 4px 14px rgba(59,130,246,.5)}
+.brandLogo svg{width:20px;height:20px}
+.nav{padding:8px 12px}.nav a{display:block;padding:13px 14px;color:#b7c8e8;text-decoration:none;border-radius:10px;margin-bottom:5px;font-size:14px;font-weight:500;transition:all .2s;position:relative}
+.nav a:hover{background:rgba(255,255,255,.08);color:#fff;transform:translateX(3px)}
+.nav a.active{background:linear-gradient(90deg,#2563eb,#3f7bf6);color:#fff;box-shadow:0 6px 16px rgba(37,99,235,.42)}
+.nav a.active::after{content:"";position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:4px;height:22px;border-radius:4px 0 0 4px;background:#fff}
+.sidefoot{position:absolute;bottom:22px;left:20px;font-size:11px;color:#8fa6cc;line-height:1.8}
+.sidefoot b{color:#dbe7ff}
+/* ===== 主区 ===== */
+.main{flex:1;min-width:0;padding:18px 20px 30px;background:linear-gradient(165deg,#e9f1fb 0%,#f6faff 48%,#eef5fd 100%)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.title{font-size:30px;font-weight:800;letter-spacing:.5px;background:linear-gradient(120deg,#0f2a5c,#2563eb);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{font-size:12px;color:#66778e;margin-left:12px;font-weight:400}
+.controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.segment{display:flex;border:1px solid #d7e4f2;background:#eaf1fa;border-radius:11px;padding:3px;overflow:hidden}
+.segment button{border:0;padding:7px 15px;background:transparent;color:#48618c;cursor:pointer;font-size:13px;border-radius:8px;font-family:inherit;transition:all .18s;font-weight:500}
+.segment button.active{background:var(--grad-blue);color:#fff;box-shadow:0 3px 9px rgba(37,99,235,.38)}
+.arrow{width:36px;height:36px;border:1px solid #d7e4f2;border-radius:11px;background:#fff;color:#2563eb;cursor:pointer;font-size:17px;transition:all .18s;box-shadow:0 2px 6px rgba(15,30,61,.06);line-height:1}
+.arrow:hover{background:var(--grad-blue);color:#fff;border-color:transparent;transform:translateY(-1px);box-shadow:0 5px 12px rgba(37,99,235,.35)}
+.period{min-width:162px;text-align:center;background:#fff;border:1px solid #d7e4f2;border-radius:12px;padding:6px 14px;box-shadow:0 2px 6px rgba(15,30,61,.06)}
+.period b{font-size:14px;color:#16294d}
+.period div{font-size:10px;color:#718198;margin-top:1px}
+.source{border:1px solid #bcd4f7;background:linear-gradient(135deg,#fff,#f0f7ff);color:#1d4ed8;padding:9px 15px;border-radius:10px;font-size:13px;cursor:pointer;transition:all .18s;font-family:inherit;font-weight:500}
+.source:hover{background:var(--grad-blue);color:#fff;border-color:transparent;box-shadow:0 5px 12px rgba(37,99,235,.35)}
+/* ===== KPI ===== */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.kpi{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px 14px;min-height:116px;box-shadow:0 6px 16px rgba(20,60,100,.05);transition:transform .2s,box-shadow .2s}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(20,60,100,.11)}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+.kpi:nth-child(1)::before{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.kpi:nth-child(2)::before{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.kpi:nth-child(3)::before{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+.kpi:nth-child(4)::before{background:linear-gradient(90deg,#10b981,#34d399)}
+.kpiTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.kpiIcon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;flex:0 0 38px}
+.kpiIcon svg{width:19px;height:19px}
+.kpiIcon.i1{background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 4px 10px rgba(37,99,235,.32)}
+.kpiIcon.i2{background:linear-gradient(135deg,#f59e0b,#fbbf24);box-shadow:0 4px 10px rgba(245,158,11,.32)}
+.kpiIcon.i3{background:linear-gradient(135deg,#8b5cf6,#a78bfa);box-shadow:0 4px 10px rgba(139,92,246,.32)}
+.kpiIcon.i4{background:linear-gradient(135deg,#10b981,#34d399);box-shadow:0 4px 10px rgba(16,185,129,.32)}
+.kpi .label{font-size:13px;color:#5b6b84;font-weight:600}
+.kpi .value{font-size:35px;font-weight:800;margin:2px 0 8px;font-variant-numeric:tabular-nums;letter-spacing:-.5px;line-height:1.1}
+.kpi .delta{display:inline-block;background:#f1f5f9;border-radius:20px;padding:3px 11px;font-size:11px;color:#64748b;font-weight:500}
+/* ===== 三卡片 ===== */
+.three{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;min-width:0;box-shadow:0 6px 16px rgba(20,60,100,.05);transition:box-shadow .2s}
+.card:hover{box-shadow:0 10px 24px rgba(20,60,100,.09)}
+.card h3{margin:0 0 8px;font-size:15px;font-weight:700;color:#16294d;display:flex;align-items:center;gap:9px}
+.card h3::before{content:"";width:4px;height:15px;border-radius:3px;background:linear-gradient(180deg,#2563eb,#38bdf8)}
+svg{width:100%;height:auto;display:block}
+.statusWrap{display:flex;align-items:center;justify-content:center;gap:26px;min-height:196px}
+.ring{width:128px;height:128px;border-radius:50%;position:relative;box-shadow:0 10px 26px rgba(20,60,100,.13),inset 0 0 0 1px rgba(20,60,100,.04)}
+.ring:after{content:"";position:absolute;inset:30px;background:#fff;border-radius:50%;box-shadow:inset 0 2px 10px rgba(20,60,100,.07)}
+.ringCenter{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800}
+.ringCenter b{font-size:28px;color:#16294d;font-variant-numeric:tabular-nums}
+.ringCenter span{font-size:11px;color:#7a8aa5;margin-top:2px;font-weight:500}
+.legend{min-width:112px}
+.legend div{font-size:12px;margin:8px 0;display:flex;align-items:center;justify-content:space-between;gap:20px;color:#3d5068}
+.legend b{font-size:15px;color:#16294d;font-variant-numeric:tabular-nums}
+.dot{width:11px;height:11px;border-radius:4px;display:inline-block;margin-right:7px}
+.barRow{display:grid;grid-template-columns:132px 1fr 44px;gap:10px;align-items:center;margin:7px 0;font-size:11px;color:#3d5068}
+.barBg{height:10px;background:#eef3f9;border-radius:8px;overflow:hidden}
+.barFill{height:100%;border-radius:8px;background:linear-gradient(90deg,#60a5fa,#2563eb);box-shadow:0 2px 5px rgba(37,99,235,.25)}
+.barRow b{font-size:13px;color:#16294d;text-align:right;font-variant-numeric:tabular-nums}
+/* ===== 甘特图 ===== */
+.ganttCard{padding-bottom:16px}
+.ganttWrap{overflow:auto;border-radius:12px;border:1px solid var(--line)}
+.ganttWrap::-webkit-scrollbar{height:8px;width:8px}
+.ganttWrap::-webkit-scrollbar-thumb{background:#c3d3e8;border-radius:8px}
+.ganttWrap::-webkit-scrollbar-track{background:#f1f6fc}
+.gantt{width:100%;border-collapse:collapse;font-size:11px;min-width:1180px}
+.gantt th{background:#f1f6fc;padding:8px;text-align:left;color:#33476a;font-weight:600;border-bottom:2px solid #e3ecf6;white-space:nowrap}
+.gantt thead tr:first-child th:not(.monthHead){background:linear-gradient(180deg,#1d3a6e,#24509c);color:#fff;border-bottom:2px solid #1d3a6e;font-weight:600}
+.gantt .monthHead{background:linear-gradient(180deg,#eaf3ff,#dcebfe);color:#1d4ed8;font-weight:700;text-align:center;font-size:11.5px;letter-spacing:.4px}
+.gantt td{border-bottom:1px solid #eef3f9;padding:8px;white-space:nowrap;transition:background .15s}
+.gantt tbody tr:nth-child(even) td{background:#fafcff}
+.gantt tbody tr:hover td{background:#f2f8ff}
+.gantt .date{font-variant-numeric:tabular-nums}
+.tcell{min-width:530px}
+.timeline{position:relative;height:30px;background:repeating-linear-gradient(90deg,#fff 0,#fff 44px,#eef3f9 45px,#fff 46px);border-radius:7px;border:1px solid #eef3f9;overflow:visible}
+.bar{position:absolute;top:6px;height:18px;border-radius:6px;color:#fff;font-size:10px;line-height:18px;text-align:center;overflow:hidden;font-weight:600;letter-spacing:.3px;box-shadow:0 2px 5px rgba(15,30,61,.2)}
+.bar.prep{background:linear-gradient(90deg,#94a3b8,#b8c5d6)}
+.bar.run{background:linear-gradient(90deg,#2563eb,#3f8cff)}
+.bar.done{background:linear-gradient(90deg,#0ea371,#2dd4a0)}
+.bar.cancel{background:linear-gradient(90deg,#e5484d,#f87171)}
+.today{position:absolute;top:0;bottom:0;width:0;background:transparent;border-left:1px dashed #ef4444;z-index:2;box-shadow:none}
+.todayLabel{position:absolute;top:-14px;left:0;color:#ef4444;font-size:9px;font-weight:700;transform:translateX(-50%);background:#fff;padding:0 3px;border-radius:4px;border:1px solid #fcd3d3}
+/* ===== 日历表头 ===== */
+.calendar{display:grid;grid-template-columns:repeat(14,1fr);gap:2px;padding:3px 2px;min-width:600px}
+.calDay{background:#f3f7fc;border:1px solid #e5edf7;border-radius:6px;padding:4px 0;text-align:center;line-height:1.25}
+.calDay b{display:block;font-size:10.5px;color:#1e3a5f;font-variant-numeric:tabular-nums;font-weight:600}
+.calDay span{font-size:9px;color:#8a9bbd}
+.calDay.calToday{background:linear-gradient(180deg,#2563eb,#1d4ed8);border-color:#2563eb;box-shadow:0 2px 8px rgba(37,99,235,.4)}
+.calDay.calToday b,.calDay.calToday span{color:#fff;font-weight:600}
+.note{font-size:10px;color:#7a899d;margin-top:7px}
+@media(max-width:1180px){.sidebar{width:160px;flex-basis:160px}.kpis{grid-template-columns:repeat(2,1fr)}.three{grid-template-columns:1fr}}
+@media(max-width:720px){.kpis{grid-template-columns:1fr}}
+
+/* ===== V1.4.1 stability patch: calendar/timeline only ===== */
+.gantt{min-width:1320px}
+.gantt th:last-child,.gantt td:last-child{min-width:650px}
+.gantt .monthHead{min-width:650px}
+.calendar{min-width:650px!important}
+.timeline{min-width:650px}
+
+</style>
+
+<style id="outer-shell-patch">
+.side,.sidebar{display:none!important}
+.app{display:block!important;width:100%!important;max-width:100%!important}
+.main{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important}
+html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+</style>
+
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><span class="brandLogo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>Delivery</div>
+  <div class="nav">
+    <a href="#">▣ 交付项目</a><a href="#">◇ 交付质量</a><a href="#" class="active">▣ 展会项目</a><a href="#">◇ POC项目</a>
+  </div>
+  <div class="sidefoot">数据：展会演示项目汇总<br>展会项目：<b>63 个</b><br>页面版本 V1.4.4</div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <div><span class="title">展会项目看板</span><span class="subtitle">掌握展会整体安排与执行进度，确保展会顺利开展</span></div>
+    <div class="controls">
+      <div class="segment" id="modeBtns"><button data-mode="day">按日</button><button data-mode="week" class="active">按周</button><button data-mode="month">按月</button><button data-mode="year">按年</button></div>
+      <button class="arrow" id="prev">‹</button><div class="period"><b id="periodLabel"></b><div id="periodSub"></div></div><button class="arrow" id="next">›</button>
+      <button class="source">查看源数据 ↗</button>
+    </div>
+  </div>
+
+  <section class="kpis">
+    <div class="kpi"><div class="kpiTop"><div class="label">展会总数</div><div class="kpiIcon i1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div></div><div class="value" id="kTotal">—</div><div class="delta" id="dTotal"></div></div>
+    <div class="kpi"><div class="kpiTop"><div class="label">进行中</div><div class="kpiIcon i2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div></div><div class="value" id="kRun">—</div><div class="delta" id="dRun"></div></div>
+    <div class="kpi"><div class="kpiTop"><div class="label">筹备中</div><div class="kpiIcon i3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div></div><div class="value" id="kPrep">—</div><div class="delta" id="dPrep"></div></div>
+    <div class="kpi"><div class="kpiTop"><div class="label">已完成</div><div class="kpiIcon i4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div></div><div class="value" id="kDone">—</div><div class="delta" id="dDone"></div></div>
+  </section>
+
+  <section class="three">
+    <div class="card"><h3>展会趋势</h3><div id="trend"></div></div>
+    <div class="card"><h3>展会状态分布</h3><div class="statusWrap"><div class="ring" id="statusRing"><div class="ringCenter"><b id="ringTotal">0</b><span>展会总数</span></div></div><div class="legend" id="statusLegend"></div></div></div>
+    <div class="card"><h3>展示产品</h3><div id="products"></div><div class="note">按当前统计周期内涉及的需求机器统计。</div></div>
+  </section>
+
+  <section class="card ganttCard">
+    <h3>
+      <span>展会进度安排</span>
+      <span id="ganttPeriodText" style="font-size:11px;font-weight:500;color:#65768d"></span><span style="font-size:10px;color:#94a3b8">（项目列表按当前筛选周期）</span>
+    </h3>
+    <div class="ganttWrap">
+      <table class="gantt">
+        <thead>
+<tr>
+  <th rowspan="2">展会项目</th>
+  <th rowspan="2">地点</th>
+  <th rowspan="2">状态</th>
+  <th rowspan="2">开始日期</th>
+  <th rowspan="2">结束日期</th>
+  <th rowspan="2">持续天数</th>
+  <th id="calendarMonthHeader" class="monthHead"></th>
+</tr>
+<tr>
+  <th id="calendarHeader" style="padding:0"></th>
+</tr>
+</thead>
+        <tbody id="ganttBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</div>
+
+<script>
+const DATA=[{"name":"电子学会","start":"2026-04-16","end":"2026-04-19","place":"武汉","status":"顺利完成","products":["EX001"],"machines":["19#"],"fae":["李浩宇"],"business":["张乐乐"],"display_status":"已完成","duration":4},{"name":"前海管理局\n中宣部外媒采风活动","start":"2026-04-16","end":"2026-04-16","place":"深圳","status":"顺利完成","products":["EX001","CX002"],"machines":["5#","28#"],"fae":["黄钧"],"business":["张顺昌"],"display_status":"已完成","duration":1},{"name":"重庆巡展","start":"2026-04-17","end":"2026-04-30","place":"重庆","status":"顺利完成","products":["CX002"],"machines":[],"fae":["李浩宇"],"business":["李雪梅"],"display_status":"已完成","duration":14},{"name":"发布会宣传片拍摄","start":"2026-04-20","end":"2026-04-20","place":"广州","status":"顺利完成","products":["EX001"],"machines":["67#"],"fae":["黄钧"],"business":["张顺昌"],"display_status":"已完成","duration":1},{"name":"云启资本人民币AGM","start":"2026-04-21","end":"2026-04-21","place":"上海","status":"顺利完成","products":["CX002"],"machines":["71#"],"fae":["王贺"],"business":["张顺昌"],"display_status":"已完成","duration":1},{"name":"FAIR产业","start":"2026-04-22","end":"2026-04-24","place":"深圳","status":"顺利完成","products":["EX001","CX002"],"machines":["83#"],"fae":["黄钧"],"business":["张乐乐"],"display_status":"已完成","duration":3},{"name":"政府演示","start":"2026-04-27","end":"2026-04-27","place":"深圳","status":"顺利完成","products":["CX002","EX001"],"machines":["28#"],"fae":["李浩宇"],"business":["刘敬霞","张顺昌"],"display_status":"已完成","duration":1},{"name":"机器人谷","start":"2026-04-28","end":"2026-04-28","place":"深圳","status":"顺利完成","products":["CX002","EX001"],"machines":[],"fae":["胡博文"],"business":["张伦诚"],"display_status":"已完成","duration":1},{"name":"清华校庆","start":"2026-04-30","end":"2026-05-07","place":"北京","status":"顺利完成","products":["EX001","EX001"],"machines":["29#"],"fae":["翁朋举"],"business":["张乐乐"],"display_status":"已完成","duration":8},{"name":"北京合生汇","start":"2026-05-01","end":"2026-08-01","place":"北京","status":"顺利完成","products":["EX001"],"machines":["69"],"fae":["翁朋举"],"business":["向宣宣"],"display_status":"已完成","duration":93},{"name":"深职院","start":"2026-05-06","end":"2026-05-09","place":"深圳","status":"顺利完成","products":["CX002"],"machines":["83#"],"fae":["林远铭"],"business":["刘智"],"display_status":"已完成","duration":4},{"name":"政府演示","start":"2026-05-07","end":"2026-05-14","place":"惠州","status":"顺利完成","products":["CX002"],"machines":["71#"],"fae":["谢金赤"],"business":["陈辉"],"display_status":"已完成","duration":8},{"name":"宝安机器人展","start":"2026-05-08","end":"2026-05-08","place":"深圳","status":"顺利完成","products":["CX002","EX001"],"machines":[],"fae":["黄钧"],"business":["张伦诚"],"display_status":"已完成","duration":1},{"name":"机场-前海","start":"2026-05-11","end":"2027-06-30","place":"深圳","status":"进行中","products":["CX002"],"machines":[],"fae":["谢金赤"],"business":["张伦诚"],"display_status":"进行中","duration":416},{"name":"市人工智能展","start":"2026-05-15","end":"2026-05-15","place":"深圳","status":"顺利完成","products":["CX002","EX001"],"machines":["28#","59#"],"fae":["黄钧"],"business":["张伦诚"],"display_status":"已完成","duration":1},{"name":"信通展会","start":"2026-05-19","end":"2026-05-22","place":"北京","status":"顺利完成","products":["EX001"],"machines":[],"fae":["翁朋举"],"business":["张乐乐"],"display_status":"已完成","duration":4},{"name":"市文博会","start":"2026-05-21","end":"2026-05-23","place":"深圳","status":"顺利完成","products":["EX001","CX002"],"machines":["94#","28#"],"fae":["黄钧"],"business":["张伦诚"],"display_status":"已完成","duration":3},{"name":"高教展","start":"2026-05-22","end":"2026-05-24","place":"南昌","status":"顺利完成","products":["EX001","CX002"],"machines":["71#"],"fae":["李浩宇"],"business":["张乐乐"],"display_status":"已完成","duration":3},{"name":"福州大学参展","start":"2026-05-22","end":"2026-05-23","place":"福州","status":"取消","products":["CX002"],"machines":[],"fae":[],"business":["刘智"],"display_status":"取消","duration":2},{"name":"哈工大","start":"2026-05-30","end":"2026-05-30","place":"北京","status":"顺利完成","products":["EX001"],"machines":[],"fae":["翁朋举"],"business":["张乐乐"],"display_status":"已完成","duration":1},{"name":"沈阳机器人会","start":"2026-05-31","end":"2026-06-02","place":"沈阳","status":"顺利完成","products":["CX002","EX001","CX002"],"machines":["37#","19#","28#"],"fae":["翁朋举","谢金赤"],"business":["李路路","黎一嵘"],"display_status":"已完成","duration":3},{"name":"APEC前期活动","start":"2026-06-03","end":"2026-06-03","place":"深圳","status":"顺利完成","products":["CX002"],"machines":["69#"],"fae":["陈德羽"],"business":["张伦诚"],"display_status":"已完成","duration":1},{"name":"北京汇博演示","start":"2026-06-05","end":"2026-06-05","place":"北京","status":"顺利完成","products":["EX001"],"machines":[],"fae":["翁朋举"],"business":["张乐乐"],"display_status":"已完成","duration":1},{"name":"宝安养老院","start":"2026-06-17","end":"2026-06-18","place":"深圳","status":"顺利完成","products":["CX002"],"machines":["69#"],"fae":["李浩宇"],"business":["杜建伟"],"display_status":"已完成","duration":2},{"name":"青海省第四届职业技能大赛","start":"2026-06-24","end":"2026-06-26","place":"青海西宁","status":"顺利完成","products":["EX001","CX002","G0"],"machines":["69#"],"fae":["王贺"],"business":["张乐乐"],"display_status":"已完成","duration":3},{"name":"上合组织","start":"2026-06-29","end":"2026-06-30","place":"深圳","status":"顺利完成","products":["EX001","CX002"],"machines":[],"fae":["谢金赤"],"business":["汪枫"],"display_status":"已完成","duration":2},{"name":"深圳市社会福利服务指导中心","start":"2026-06-30","end":"2026-07-04","place":"深圳","status":"进行中","products":["CX002"],"machines":[],"fae":["文雷"],"business":["潘攀"],"display_status":"进行中","duration":5},{"name":"福州职业技术学院","start":"2026-07-02","end":"2026-07-04","place":"福州","status":"顺利完成","products":["CX002"],"machines":[],"fae":["李浩宇"],"business":["缪润杰"],"display_status":"已完成","duration":3},{"name":"深圳卫视拍摄","start":"2026-07-09","end":"2026-07-10","place":"深圳","status":"顺利完成","products":["CX002"],"machines":[],"fae":["王涵雨"],"business":["王曌"],"display_status":"已完成","duration":2},{"name":"泰康上海演示","start":"2026-07-12","end":"2026-07-17","place":"上海","status":"取消","products":["CX002"],"machines":[],"fae":["翁朋举"],"business":["庞云"],"display_status":"取消","duration":6},{"name":"山东水利职业学院（日照）","start":"2026-07-14","end":"2026-07-17","place":"山东","status":"顺利完成","products":["EX001"],"machines":[],"fae":["翁朋举"],"business":["张乐乐"],"display_status":"已完成","duration":4},{"name":"成都APEC活动","start":"2026-07-15","end":"2026-07-23","place":"成都","status":"顺利完成","products":["EX001","CX002","EX001"],"machines":[],"fae":["王贺"],"business":["刘敬霞"],"display_status":"已完成","duration":9},{"name":"第二十届高校电子信息学院院长(系主任)年会","start":"2026-07-16","end":"2026-07-19","place":"西安","status":"顺利完成","products":["EX001"],"machines":["86#"],"fae":["李浩宇"],"business":["张乐乐"],"display_status":"已完成","duration":4},{"name":"上汽集团年度Tech Show","start":"2026-07-16","end":"2026-07-17","place":"上海","status":"顺利完成","products":["EX001"],"machines":["128#"],"fae":["赵永利"],"business":["李龙飞"],"display_status":"已完成","duration":2},{"name":"深圳福田党群服务中心","start":"2026-07-16","end":"2026-07-17","place":"深圳","status":"顺利完成","products":["EX001"],"machines":[],"fae":["王涵雨"],"business":["张伦诚"],"display_status":"已完成","duration":2},{"name":"2026北京智慧康养机器人应用大赛","start":"2026-07-23","end":"2026-08-03","place":"北京","status":"顺利完成","products":["EX001"],"machines":["86#"],"fae":["翁朋举"],"business":["于涛"],"display_status":"已完成","duration":12},{"name":"深圳出版集团书吧","start":"2026-07-24","end":"2026-07-25","place":"深圳","status":"顺利完成","products":["CX002"],"machines":["69#"],"fae":["许晓彬"],"business":["李佳珉"],"display_status":"已完成","duration":2},{"name":"湖南省政协第一副主席汇报展示会","start":"2026-07-28","end":"2026-08-05","place":"永州","status":"顺利完成","products":["EX001","CX002"],"machines":["224#","71#"],"fae":["李浩宇"],"business":["陈辉"],"display_status":"已完成","duration":9},{"name":"东北亚具身智能创新中心展示","start":"2026-08-03","end":"2026-09-30","place":"沈阳","status":"进行中","products":["CX002","CX002"],"machines":["48#","69#"],"fae":["翁朋举"],"business":["黎一嵘"],"display_status":"进行中","duration":59},{"name":"广西具身智能训练厂考察活动","start":"2026-08-06","end":"2026-08-06","place":"南宁","status":"取消","products":["EX001"],"machines":[],"fae":[],"business":["杨灵江"],"display_status":"取消","duration":1},{"name":"中移动杭研院","start":"2026-08-09","end":"2026-08-10","place":"杭州","status":"顺利完成","products":["EX001"],"machines":["86#"],"fae":["赵永利"],"business":["张伦诚"],"display_status":"已完成","duration":2},{"name":"常熟市物理AI Mall","start":"2026-08-10","end":"2026-08-10","place":"常熟","status":"顺利完成","products":["EX001"],"machines":["224#"],"fae":[],"business":["周玄"],"display_status":"已完成","duration":1},{"name":"市中心IOC","start":"2026-08-10","end":"2026-08-27","place":"深圳","status":"顺利完成","products":["CX002"],"machines":["44#"],"fae":["文雷"],"business":["潘攀"],"display_status":"已完成","duration":18},{"name":"妇儿大厦","start":"2026-08-10","end":"2026-11-23","place":"深圳","status":"进行中","products":["CX002"],"machines":["46#"],"fae":["文雷"],"business":["潘攀"],"display_status":"进行中","duration":106},{"name":"宝安区党代会","start":"2026-08-12","end":"2026-08-14","place":"深圳","status":"顺利完成","products":["CX002"],"machines":["28#"],"fae":[],"business":["刘敬霞"],"display_status":"已完成","duration":3},{"name":"WRC","start":"2026-08-15","end":"2026-08-23","place":"北京","status":"顺利完成","products":["桌面主从（物流版）"],"machines":[],"fae":["文雷","翁朋举","谢金赤","郭喜彬"],"business":["李路路"],"display_status":"已完成","duration":9},{"name":"字节活动","start":"2026-08-21","end":"2026-08-22","place":"上海","status":"取消","products":["EX001","EX001"],"machines":["93#"],"fae":["赵永利"],"business":["牛耕"],"display_status":"取消","duration":2},{"name":"开学第一课","start":"2026-08-21","end":"2026-08-21","place":"广州","status":"顺利完成","products":["EX001"],"machines":["224#"],"fae":["王涵雨"],"business":["李国泰"],"display_status":"已完成","duration":1},{"name":"龙华区书记调研会","start":"2026-08-24","end":"2026-08-24","place":"深圳","status":"顺利完成","products":["G0"],"machines":[],"fae":[],"business":["刘丽绮"],"display_status":"已完成","duration":1},{"name":"四川电网","start":"2026-08-31","end":"2026-09-02","place":"成都","status":"顺利完成","products":["EX001"],"machines":["44#"],"fae":["陈阳"],"business":["汪诗倍Edilin"],"display_status":"已完成","duration":3},{"name":"XAIR具身智能展会","start":"2026-09-02","end":"2026-09-06","place":"广州","status":"顺利完成","products":["CX002"],"machines":["28#"],"fae":[],"business":["李国泰"],"display_status":"已完成","duration":5},{"name":"APEC亚太媒体高端论坛科技展","start":"2026-09-05","end":"2026-09-05","place":"深圳","status":"顺利完成","products":["桌面主从（物流版）"],"machines":[],"fae":["文雷"],"business":["李国泰"],"display_status":"已完成","duration":1},{"name":"前海APEC物流展","start":"2026-09-05","end":"2026-09-05","place":"深圳","status":"顺利完成","products":["桌面主从（物流版）"],"machines":[],"fae":["文雷"],"business":["李国泰"],"display_status":"已完成","duration":1},{"name":"第三届GTI数智香江国际论坛","start":"2026-09-08","end":"2026-09-08","place":"香港","status":"顺利完成","products":["EX001"],"machines":["224#"],"fae":[],"business":["邵蕾 Amber"],"display_status":"已完成","duration":1},{"name":"宁波党校人工智能展览","start":"2026-09-09","end":"2026-09-10","place":"宁波","status":"顺利完成","products":["CX002"],"machines":[],"fae":["王贺"],"business":["张乐乐"],"display_status":"已完成","duration":2},{"name":"第十六届智慧城市与智能经济博览会","start":"2026-09-10","end":"2026-09-13","place":"宁波","status":"进行中","products":["EX001"],"machines":["客户支持机器"],"fae":["王贺"],"business":["张乐乐"],"display_status":"进行中","duration":4},{"name":"上海联通展","start":"2026-09-10","end":"2026-09-10","place":"上海","status":"顺利完成","products":["EX001"],"machines":["86#"],"fae":["翁朋举"],"business":["刘敬霞"],"display_status":"已完成","duration":1},{"name":"江苏产学研合作对接大会","start":"2026-09-11","end":"2026-09-12","place":"南京","status":"进行中","products":["EX001"],"machines":["635#"],"fae":["翁朋举"],"business":["缪润杰"],"display_status":"进行中","duration":2},{"name":"2026面向东盟人工智能合作会议","start":"2026-09-16","end":"2026-09-16","place":"南宁","status":"规划中","products":["EX001"],"machines":["87#"],"fae":[],"business":["杨灵江"],"display_status":"筹备中","duration":1},{"name":"世界职业院校技能大赛","start":"2026-09-16","end":"2026-09-20","place":"滨州","status":"规划中","products":["CX002"],"machines":[],"fae":[],"business":["刘智"],"display_status":"筹备中","duration":5},{"name":"华为全联接大会2026","start":"2026-09-17","end":"2026-09-19","place":"上海","status":"规划中","products":["EX001"],"machines":["224#"],"fae":["文雷"],"business":["张悦"],"display_status":"筹备中","duration":3},{"name":"CCF东北论坛","start":"2026-09-19","end":"2026-09-19","place":"哈尔滨","status":"取消","products":["G0"],"machines":[],"fae":[],"business":[],"display_status":"取消","duration":1},{"name":"2026世界制造业大会","start":"2026-09-20","end":"2026-09-23","place":"合肥","status":"规划中","products":["桌面主从（物流版）","EX001"],"machines":[],"fae":["文雷"],"business":["毛磊"],"display_status":"筹备中","duration":4}], NOW=new Date('2026-09-12T12:00:00');
+
+let mode='week',anchor=new Date('2026-09-12T12:00:00');
+
+const periodLabelEl=document.getElementById('periodLabel');
+const periodSubEl=document.getElementById('periodSub');
+const ganttPeriodTextEl=document.getElementById('ganttPeriodText');
+const kTotalEl=document.getElementById('kTotal');
+const kRunEl=document.getElementById('kRun');
+const kPrepEl=document.getElementById('kPrep');
+const kDoneEl=document.getElementById('kDone');
+const statusRingEl=document.getElementById('statusRing');
+const ringTotalEl=document.getElementById('ringTotal');
+const statusLegendEl=document.getElementById('statusLegend');
+const productsEl=document.getElementById('products');
+const trendEl=document.getElementById('trend');
+const ganttBodyEl=document.getElementById('ganttBody');
+const calendarHeaderEl=document.getElementById('calendarHeader');
+const calendarMonthHeaderEl=document.getElementById('calendarMonthHeader');
+const prevBtn=document.getElementById('prev');
+const nextBtn=document.getElementById('next');
+
+function D(s){return new Date(s+'T00:00:00')}function add(d,n){let x=new Date(d);x.setDate(x.getDate()+n);return x}function monday(d){let x=new Date(d),k=(x.getDay()+6)%7;return add(x,-k)}
+function bounds(a,m){let s,e,label,sub='';if(m==='day'){s=new Date(a);e=new Date(a);label=`${a.getFullYear()}-${String(a.getMonth()+1).padStart(2,'0')}-${String(a.getDate()).padStart(2,'0')}`}if(m==='week'){s=monday(a);e=add(s,6);let jan4=new Date(s.getFullYear(),0,4),w=Math.floor((s-monday(jan4))/604800000)+1;label=`${s.getFullYear()}年 第${w}周`;sub=`${String(s.getMonth()+1).padStart(2,'0')}/${String(s.getDate()).padStart(2,'0')} - ${String(e.getMonth()+1).padStart(2,'0')}/${String(e.getDate()).padStart(2,'0')}`}if(m==='month'){s=new Date(a.getFullYear(),a.getMonth(),1);e=new Date(a.getFullYear(),a.getMonth()+1,0);label=`${a.getFullYear()}年${a.getMonth()+1}月`}if(m==='year'){s=new Date(a.getFullYear(),0,1);e=new Date(a.getFullYear(),11,31);label=`${a.getFullYear()}年`}return{s,e,label,sub}}
+function shift(a,m,dir){let x=new Date(a);if(m==='day')x.setDate(x.getDate()+dir);if(m==='week')x.setDate(x.getDate()+7*dir);if(m==='month')x.setMonth(x.getMonth()+dir);if(m==='year')x.setFullYear(x.getFullYear()+dir);return x}
+function overlap(e,b){return D(e.start)<=b.e&&D(e.end)>=b.s}function selected(b){return DATA.filter(e=>overlap(e,b))}
+function sc(arr){let o={'进行中':0,'筹备中':0,'已完成':0,'取消':0};arr.forEach(e=>o[e.display_status]=(o[e.display_status]||0)+1);return o}
+function delta(id,n,p){let el=document.getElementById(id),d=n-p;el.textContent=d===0?'较上期 0':`较上期 ${d>0?'↑':'↓'} ${Math.abs(d)}`;el.style.color=d===0?'#64748b':d>0?'#ef4444':'#10b981'}
+function bars(items){let mx=Math.max(1,...items.map(x=>x[1]));return items.slice(0,7).map(([n,v])=>`<div class="barRow"><span>${n}</span><div class="barBg"><div class="barFill" style="width:${v/mx*100}%"></div></div><b>${v}</b></div>`).join('')}
+function trendData(){let a=[];if(mode==='week'){let base=monday(anchor);for(let i=-2;i<=2;i++){let s=add(base,i*7),e=add(s,6);a.push({label:`第${Math.floor((s-monday(new Date(s.getFullYear(),0,4)))/604800000)+1}周`,value:selected({s,e}).filter(x=>x.display_status!=='取消').length,active:i===0})}}else if(mode==='month'){for(let i=-2;i<=2;i++){let d=new Date(anchor.getFullYear(),anchor.getMonth()+i,1),b=bounds(d,'month');a.push({label:`${d.getMonth()+1}月`,value:selected(b).filter(x=>x.display_status!=='取消').length,active:i===0})}}else if(mode==='year'){for(let i=-2;i<=2;i++){let d=new Date(anchor.getFullYear()+i,0,1),b=bounds(d,'year');a.push({label:String(d.getFullYear()),value:selected(b).filter(x=>x.display_status!=='取消').length,active:i===0})}}else{for(let i=-3;i<=3;i++){let d=add(anchor,i),b=bounds(d,'day');a.push({label:`${d.getMonth()+1}/${d.getDate()}`,value:selected(b).filter(x=>x.display_status!=='取消').length,active:i===0})}}return a}
+function renderTrend(){let data=trendData(),W=600,H=145,pad=36,max=Math.max(1,...data.map(x=>x.value)),plotW=W-pad*2,plotH=82,pts=data.map((x,i)=>[pad+i*plotW/(data.length-1),24+plotH-x.value/max*plotH]);let area=`M${pts[0][0]},${24+plotH}L${pts.map(p=>`${p[0]},${p[1]}`).join('L')}L${pts[pts.length-1][0]},${24+plotH}Z`;trendEl.innerHTML=`<svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563eb" stop-opacity=".22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></linearGradient></defs>${[0,1,2,3,4].map(i=>{let y=24+i*plotH/4;return `<line x1="${pad}" y1="${y}" x2="${W-pad}" y2="${y}" stroke="#e8eef7"/>`}).join('')}<path d="${area}" fill="url(#tg)"/><polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="${data[i].active?6:4.5}" fill="#2563eb" stroke="#fff" stroke-width="2"/><text x="${p[0]}" y="${p[1]-11}" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">${data[i].value}</text><text x="${p[0]}" y="${H-10}" text-anchor="middle" font-size="10" fill="${data[i].active?'#2563eb':'#64748b'}" font-weight="${data[i].active?700:400}">${data[i].label}</text>`).join('')}</svg>`}
+function renderGantt(arr,b,calRange){let list=arr.filter(e=>e.display_status!=='取消').sort((a,b)=>D(a.start)-D(b.start));if(!list.length){ganttBodyEl.innerHTML='<tr><td colspan="7" style="text-align:center;color:#718198;padding:28px">当前周期暂无展会</td></tr>';return}let gs=calRange?.start||b.s, ge=calRange?.end||b.e;let span=Math.max(1,(ge-gs)/86400000);ganttBodyEl.innerHTML=list.map(e=>{let s=Math.max(0,(D(e.start)-gs)/86400000/span*100),en=Math.min(100,(D(e.end)-gs)/86400000/span*100),w=Math.max(2,en-s+1.5),cls=e.display_status==='筹备中'?'prep':e.display_status==='进行中'?'run':'done',today=(NOW-gs)/86400000/span*100,tline=(today>=0&&today<=100)?`<i class="today" style="left:${today}%"></i>`:'';return `<tr><td>${e.name}</td><td>${e.place||'—'}</td><td>${e.display_status}</td><td class="date">${e.start}</td><td class="date">${e.end}</td><td>${e.duration}天</td><td class="tcell"><div class="timeline">${tline}<span class="bar ${cls}" style="left:${s}%;width:${w}%">${e.display_status}</span></div></td></tr>`}).join('')}
+
+function renderCalendar(b){
+  // Detailed calendar header for the gantt timeline:
+  // week -> selected week + following week (14 days, the confirmed standard);
+  // day -> the single day; month -> all days of the month; year -> 12 month blocks.
+  let start=b.s, end=b.e;
+  if(mode==='week'){ end=add(b.s,13); }
+  const span=Math.max(1,Math.round((end-start)/86400000)+1);
+  let cells=[];
+  if(mode==='year'){
+    for(let m=0;m<12;m++){cells.push(`<div class="calDay"><b>${m+1}月</b><span>${start.getFullYear()}</span></div>`)}
+  }else{
+    for(let i=0;i<span;i++){
+      let d=add(start,i);
+      let wd=['日','一','二','三','四','五','六'][d.getDay()];
+      let isToday=d.toDateString()===NOW.toDateString();
+      cells.push(`<div class="calDay ${isToday?'calToday':''}"><b>${d.getMonth()+1}/${d.getDate()}</b><span>周${wd}</span></div>`);
+    }
+  }
+  const n=mode==='year'?12:span;
+  calendarHeaderEl.innerHTML=`<div class="calendar" style="grid-template-columns:repeat(${n},1fr);min-width:${Math.max(600,n*42+8)}px">${cells.join('')}</div>`;
+
+  // grouped month/week line above the day columns
+  let jan4=new Date(start.getFullYear(),0,4);
+  let weekNo=Math.floor((start-monday(jan4))/604800000)+1;
+  let label;
+  if(mode==='year'){label=`${start.getFullYear()}年`}
+  else if(mode==='month'){label=`${start.getFullYear()}年${start.getMonth()+1}月`}
+  else if(mode==='day'){label=`${start.getFullYear()}-${String(start.getMonth()+1).padStart(2,'0')}-${String(start.getDate()).padStart(2,'0')}`}
+  else{label=`${start.getFullYear()}年${start.getMonth()+1}月（第${weekNo}周）　${String(start.getMonth()+1).padStart(2,'0')}/${String(start.getDate()).padStart(2,'0')} - ${String(b.e.getMonth()+1).padStart(2,'0')}/${String(b.e.getDate()).padStart(2,'0')}`}
+  calendarMonthHeaderEl.textContent=label;
+
+  return {start,end};
+}
+
+function render(){let b=bounds(anchor,mode),arr=selected(b),prev=selected(bounds(shift(anchor,mode,-1),mode)),c=sc(arr),pc=sc(prev),total=arr.filter(x=>x.display_status!=='取消').length,pt=prev.filter(x=>x.display_status!=='取消').length;periodLabelEl.textContent=b.label;periodSubEl.textContent=b.sub;ganttPeriodTextEl.textContent=b.label+(b.sub?'　'+b.sub:'');kTotalEl.textContent=total;kRunEl.textContent=c['进行中']||0;kPrepEl.textContent=c['筹备中']||0;kDoneEl.textContent=c['已完成']||0;delta('dTotal',total,pt);delta('dRun',c['进行中']||0,pc['进行中']||0);delta('dPrep',c['筹备中']||0,pc['筹备中']||0);delta('dDone',c['已完成']||0,pc['已完成']||0);let live=arr.filter(x=>x.display_status!=='取消'),den=Math.max(1,live.length),run=c['进行中']||0,prep=c['筹备中']||0,done=c['已完成']||0,a=run/den*100,bp=(run+prep)/den*100,bd=(run+prep+done)/den*100;statusRingEl.style.background=`conic-gradient(#2563eb 0 ${a}%,#f59e0b ${a}% ${bp}%,#10b981 ${bp}% ${bd}%,#edf2f7 ${bd}% 100%)`;ringTotalEl.textContent=live.length;statusLegendEl.innerHTML=`<div><span><i class="dot" style="background:#2563eb"></i>进行中</span><b>${run}</b></div><div><span><i class="dot" style="background:#f59e0b"></i>筹备中</span><b>${prep}</b></div><div><span><i class="dot" style="background:#10b981"></i>已完成</span><b>${done}</b></div>`;let p={};live.forEach(e=>e.products.forEach(x=>p[x]=(p[x]||0)+1));productsEl.innerHTML=bars(Object.entries(p).sort((a,b)=>b[1]-a[1]));let cal=renderCalendar(b);
+renderTrend();
+// 进度安排与顶部 KPI 使用同一筛选口径：
+let ganttArr=arr;
+renderGantt(ganttArr,b,cal)}
+document.querySelectorAll('#modeBtns button').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('#modeBtns button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');mode=btn.dataset.mode;render()});prevBtn.onclick=()=>{anchor=shift(anchor,mode,-1);render()};nextBtn.onclick=()=>{anchor=shift(anchor,mode,1);render()};render();
+</script>
+</body></html>
