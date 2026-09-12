@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>交付项目看板 V1.3.3</title>
+<title>标品交付项目看板 V1.3.3</title>
 <style>
 :root{--blue:#2563eb;--blue2:#3f8cff;--green:#10b981;--orange:#f59e0b;--purple:#8b5cf6;--red:#ef4444;--ink:#10233f;--muted:#64748b;--line:#e6edf7;--bg:#eef4fb}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif}
@@ -17,21 +17,36 @@
 .ganttHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}.ganttLegend{font-size:10px;color:#718198}.ganttWrap{overflow:auto;border:1px solid #e5edf7;border-radius:11px;max-height:540px}table{border-collapse:collapse;width:100%;font-size:10.5px}.gantt{min-width:1420px}th{background:#eef5fb;padding:7px;text-align:left;color:#33476a;position:sticky;top:0;z-index:3}td{padding:7px;border-bottom:1px solid #edf2f7;white-space:nowrap}.status{display:inline-block;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700}.srun{background:#dbeafe;color:#1d4ed8}.spending{background:#ede9fe;color:#6d28d9}.swait{background:#fff7ed;color:#c2410c}.timeline{position:relative;height:34px;min-width:1500px;background:repeating-linear-gradient(90deg,#fff 0,#fff 24px,#edf2f7 25px,#fff 26px)}.today{position:absolute;top:0;bottom:0;border-left:1px dashed #ef4444}.bar{position:absolute;top:9px;height:14px;border-radius:6px;background:#2563eb}.bar.pending{background:#8b5cf6}.nodate{font-size:10px;color:#94a3b8;padding-left:8px}
 .calendar{display:grid;grid-template-columns:repeat(121,minmax(12px,1fr));min-width:1500px}.day{text-align:center;padding:4px 0;border-right:1px solid #e3ebf5;font-size:8.5px;color:#65758d}.day b{display:block;font-size:9.5px;color:#243a58}.day.calToday{background:#fff5f5}.day.calToday b{color:#ef4444}
 @media(max-width:1180px){.sidebar{width:160px;flex-basis:160px}.row2{grid-template-columns:1fr}.overview{grid-template-columns:repeat(2,1fr)}}
-</style>
 
+.pendingNote{
+  display:inline-block;
+  margin:-2px 0 9px;
+  padding:3px 9px;
+  border-radius:12px;
+  background:#f3e8ff;
+  color:#7e22ce;
+  font-size:10.5px;
+  font-weight:600;
+}
+
+.titleSub{
+  font-size:12px;
+  font-weight:500;
+  color:#6b7d99;
+  margin-left:4px;
+  vertical-align:middle;
+}
+</style>
 <style id="outer-shell-patch">
-.side,.sidebar{display:none!important}
-.app{display:block!important;width:100%!important;max-width:100%!important}
+.side,.sidebar{display:none!important}.app{display:block!important;width:100%!important;max-width:100%!important}
 .main{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important}
 html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
-</style>
-
-</head>
+</style></head>
 <body>
 <div class="app">
 <aside class="sidebar"><div class="brand">Delivery</div><div class="nav"><a class="active">▣ 交付项目</a><a>◇ 交付质量</a><a>▣ 展会项目</a><a>◇ POC项目</a></div><div class="sidefoot">数据源：<br>① 当前交付项目<br>② 待启动交付项目<br><br>页面版本 V1.3.3</div></aside>
 <main class="main">
-<div class="top"><div><span class="title">交付项目看板</span><span class="subtitle">查看当前项目盘面、本周变化、设备规模与未来交付计划</span></div><div class="controls"><div class="segment"><span>按日</span><span class="on">按周</span><span>按月</span><span>按年</span></div><div class="period"><b>2026年第37周</b><div style="font-size:10px;color:#718198">09/07 - 09/13</div></div><button class="btn">查看源数据 ↗</button></div></div>
+<div class="top"><div><span class="title">标品交付项目看板</span><span class="subtitle">查看当前项目盘面、本周变化、设备规模与未来交付计划</span></div><div class="controls"><div class="segment"><span>按日</span><span class="on">按周</span><span>按月</span><span>按年</span></div><div class="period"><b>2026年第37周</b><div style="font-size:10px;color:#718198">09/07 - 09/13</div></div><button class="btn">查看源数据 ↗</button></div></div>
 
 <section class="row2">
   <div class="card">
@@ -62,7 +77,7 @@ html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!import
     <div id="curTypes"></div>
   </div>
   <div class="card">
-    <h3>待启动交付设备数汇总</h3>
+    <h3>待启动交付设备数汇总 <span class="titleSub">（合同签订阶段）</span></h3>
     <div class="deviceTop pending"><span class="big" id="penDevice"></span><span class="unit">台 / 套 / 只</span></div>
     <div id="penTypes" class="pendingBars"></div>
   </div>
@@ -87,7 +102,7 @@ html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!import
 </div>
 
 <script>
-const D={"portfolio":{"total":50,"completed":33,"ongoing":10,"pending":7},"weekly":{"completed":1,"ongoing":9,"new_pending":null},"devices":{"current_total":774,"pending_total":1844,"current_types":[{"name":"无本体G0","value":549},{"name":"量子一号","value":119},{"name":"自研六轴臂","value":28},{"name":"桌面主从","value":27},{"name":"量子二号","value":24},{"name":"灵巧手","value":20},{"name":"乌龟","value":3},{"name":"量子一号, 乌龟","value":2}],"pending_types":[{"name":"G0","value":800},{"name":"G1","value":600},{"name":"量子一号","value":394},{"name":"量子三号","value":30},{"name":"灵巧手","value":10},{"name":"量子二号","value":5},{"name":"量子2号","value":5}]},"gantt":[{"name":"上交致远","owner":"梁欣怡","status":"进行中","start":"2026-09-01","end":"2026-09-05","progress":100,"level":"D"},{"name":"CVPR比赛机械臂","owner":"梁欣怡","status":"进行中","start":"2026-09-07","end":"2026-09-30","progress":22,"level":"D"},{"name":"淮南联大","owner":"梁欣怡","status":"进行中","start":"2026-09-07","end":"2026-09-15","progress":62,"level":"B"},{"name":"成都清华（四期）","owner":"梁欣怡","status":"进行中","start":"2026-09-09","end":"2026-09-11","progress":100,"level":"B"},{"name":"宝安","owner":"梁欣怡","status":"待启动","start":"2026-09-20","end":"2026-09-30","progress":0,"level":"S"},{"name":"博登","owner":"梁欣怡","status":"待启动","start":"2026-09-22","end":"2026-12-30","progress":0,"level":"S"},{"name":"永州数采场","owner":"李宏运","status":"待启动","start":"2026-09-21","end":"2026-10-15","progress":0,"level":"A"},{"name":"西安数采厂","owner":"李宏运","status":"待启动","start":"2026-09-18","end":"2026-12-30","progress":0,"level":"S"},{"name":"卡瑞欧-中科院","owner":"梁欣怡","status":"待导入","start":"2026-09-14","end":"2026-09-30","progress":0,"level":"C"},{"name":"苏州智迅","owner":"梁欣怡","status":"待部署","start":"2026-09-14","end":"2026-09-30","progress":null,"level":"C"},{"name":"恺望（一期）","owner":"李宏运","status":"进行中","start":"2026-09-01","end":"2026-09-19","progress":null,"level":"C"},{"name":"成都清华（三期）","owner":"梁欣怡","status":"进行中","start":"2026-07-07","end":"2026-09-30","progress":null,"level":"A"},{"name":"探月黑客松比赛机械臂","owner":"—","status":"进行中","start":"2026-09-07","end":"2026-09-30","progress":null,"level":"—"}]};
+const D={"portfolio":{"total":50,"completed":33,"ongoing":10,"pending":7},"weekly":{"completed":1,"ongoing":9,"new_pending":null},"devices":{"current_total":774,"pending_total":1844,"current_types":[{"name":"无本体G0","value":549},{"name":"量子一号","value":121},{"name":"自研六轴臂","value":29},{"name":"桌面主从","value":27},{"name":"量子二号","value":24},{"name":"灵巧手","value":20},{"name":"乌龟","value":4}],"pending_types":[{"name":"G0","value":800},{"name":"G1","value":600},{"name":"量子一号","value":394},{"name":"量子三号","value":30},{"name":"灵巧手","value":10},{"name":"量子二号","value":5},{"name":"量子2号","value":5}]},"gantt":[{"name":"成都清华（三期）","owner":"梁欣怡","status":"进行中","start":"2026-07-07","end":"2026-09-30","progress":null,"level":"A"},{"name":"上交致远","owner":"梁欣怡","status":"进行中","start":"2026-09-01","end":"2026-09-05","progress":100,"level":"D"},{"name":"恺望（一期）","owner":"李宏运","status":"进行中","start":"2026-09-01","end":"2026-09-19","progress":null,"level":"C"},{"name":"CVPR比赛机械臂","owner":"梁欣怡","status":"进行中","start":"2026-09-07","end":"2026-09-30","progress":22,"level":"D"},{"name":"探月黑客松比赛机械臂","owner":"—","status":"进行中","start":"2026-09-07","end":"2026-09-30","progress":null,"level":"—"},{"name":"淮南联大","owner":"梁欣怡","status":"进行中","start":"2026-09-07","end":"2026-09-15","progress":62,"level":"B"},{"name":"成都清华（四期）","owner":"梁欣怡","status":"进行中","start":"2026-09-09","end":"2026-09-11","progress":100,"level":"B"},{"name":"苏州智迅","owner":"梁欣怡","status":"待部署","start":"2026-09-14","end":"2026-09-30","progress":null,"level":"C"},{"name":"卡瑞欧-中科院","owner":"梁欣怡","status":"待导入","start":"2026-09-14","end":"2026-09-30","progress":0,"level":"C"},{"name":"西安数采厂","owner":"李宏运","status":"待启动","start":"2026-09-18","end":"2026-12-30","progress":0,"level":"S"},{"name":"宝安","owner":"梁欣怡","status":"待启动","start":"2026-09-20","end":"2026-09-30","progress":0,"level":"S"},{"name":"永州数采场","owner":"李宏运","status":"待启动","start":"2026-09-21","end":"2026-10-15","progress":0,"level":"A"},{"name":"博登","owner":"梁欣怡","status":"待启动","start":"2026-09-22","end":"2026-12-30","progress":0,"level":"S"}]};
 const totalEl=document.getElementById('total'), completedEl=document.getElementById('completed'),
 ongoingEl=document.getElementById('ongoing'), pendingEl=document.getElementById('pending'),
 wDoneEl=document.getElementById('wDone'), wRunEl=document.getElementById('wRun'), wPendingEl=document.getElementById('wPending'),
@@ -115,7 +130,7 @@ function bars(id,items){
   const mx=Math.max(1,...items.map(x=>x.value));
   el.innerHTML=items.map(x=>`<div class="barRow"><span title="${x.name}">${x.name.length>12?x.name.slice(0,12)+'…':x.name}</span><div class="barBg"><div class="barFill" style="width:${x.value/mx*100}%"></div></div><b>${x.value}</b></div>`).join('');
 }
-bars('curTypes',D.devices.current_types.filter(x=>x.name!=='量子一号')); bars('penTypes',D.devices.pending_types);
+bars('curTypes',D.devices.current_types); bars('penTypes',D.devices.pending_types);
 
 // 9月-12月详细日历：月初、每周一和今天显示日期，其他日期保留网格
 let days=[];

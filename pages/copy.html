@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>复制项目看板 V1.7</title>
+<style>
+:root{
+  --nav:#f6f9fd; --navline:#dde7f2; --blue:#1268f3; --blue2:#2f7df6;
+  --ink:#11284a; --muted:#64748b; --line:#dfe8f3; --soft:#f7fbff;
+  --red:#ff4d4f; --milestone:#8a95a4;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;background:#f4f8fd;color:var(--ink);
+font-family:"PingFang SC","Microsoft YaHei","Segoe UI",Arial,sans-serif}
+.app{display:flex;min-height:100vh}
+.sidebar{width:184px;flex:0 0 184px;background:linear-gradient(180deg,#f9fbfe,#eef4fb);border-right:1px solid var(--navline)}
+.logo{height:68px;display:flex;align-items:center;padding:0 22px;font-size:20px;font-weight:800}
+.logo:before{content:"◆";color:#1268f3;margin-right:10px}
+.nav{padding:4px 10px}
+.nav .group{font-size:11px;color:#8da0b8;padding:18px 14px 8px}
+.nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#425773;padding:12px 14px;border-radius:9px;margin:3px 0;font-size:14px}
+.nav a.active{background:#e8f1ff;color:#1164e8;font-weight:700;border-left:3px solid #1164e8}
+.main{flex:1;min-width:0;padding:18px 22px 28px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.title{font-size:27px;font-weight:800}
+.todayTop{font-size:12px;color:#60738d}
+.card{background:#fff;border:1px solid #e5edf6;border-radius:14px;box-shadow:0 4px 14px rgba(33,73,120,.05);padding:14px 14px 16px}
+.cardTitle{font-size:18px;font-weight:800;margin:0 0 12px}
+.tableWrap{overflow-x:auto;overflow-y:hidden;border:1px solid #e1e9f2;border-radius:10px}
+.gantt{border-collapse:collapse;table-layout:fixed;min-width:1500px;width:100%;font-size:11px}
+.gantt th,.gantt td{border-right:1px solid #e5edf5;border-bottom:1px solid #e6edf5}
+.gantt th{background:#eef5fb;height:58px;padding:0 9px;font-weight:700;text-align:left}
+.gantt td{height:58px;padding:0 9px;background:#fff}
+.gantt th:nth-child(1),.gantt td:nth-child(1){width:150px}
+.gantt th:nth-child(2),.gantt td:nth-child(2){width:150px}
+.gantt th:nth-child(3),.gantt td:nth-child(3){width:100px;text-align:center}
+.gantt th:nth-child(4),.gantt td:nth-child(4){width:80px;text-align:center}
+.gantt th:nth-child(5),.gantt td:nth-child(5){width:1020px;padding:0}
+.status{display:inline-flex;align-items:center;justify-content:center;min-width:64px;height:25px;padding:0 12px;border-radius:14px;background:#e5f0ff;color:#1268f3;font-weight:700}
+.manager{display:flex;align-items:center;gap:8px}
+.avatar{width:31px;height:31px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;background:linear-gradient(135deg,#6b8cff,#16b7a1)}
+.progressNum{font-size:13px;font-weight:800}
+.timelineHeader{position:relative;height:58px;min-width:1020px;background:#eef5fb}
+.dateCell{position:absolute;top:0;height:58px;border-left:1px solid #dde7f1;text-align:center;padding-top:12px;color:#203a61;transform:translateX(-50%);width:54px;font-size:9px}
+.dateCell b{display:block;font-size:10px;margin-bottom:3px}
+.dateCell.todayLabel b,.dateCell.todayLabel span{color:var(--red)}
+.timeline{position:relative;height:58px;min-width:1020px;background:
+repeating-linear-gradient(90deg,#fff 0,#fff calc(100% / 61 - 1px),#edf2f7 calc(100% / 61 - 1px),#edf2f7 calc(100% / 61))}
+.todayLine{position:absolute;top:0;bottom:0;border-left:1.5px dashed var(--red);z-index:4}
+.progressBar{position:absolute;top:22px;height:10px;border-radius:8px;background:linear-gradient(90deg,var(--blue),var(--blue2));z-index:2}
+.milestone{position:absolute;top:19px;width:10px;height:10px;background:var(--milestone);transform:translateX(-50%) rotate(45deg);z-index:5}
+.milestoneLabel{position:absolute;top:3px;transform:translateX(8px);font-size:8px;line-height:1.15;color:#263d5b;white-space:nowrap;z-index:6}
+.legend{display:flex;gap:28px;align-items:center;padding:12px 2px 0;font-size:11px;color:#51657f}
+.legend .bar{width:58px;height:12px;border-radius:7px;background:linear-gradient(90deg,var(--blue),var(--blue2))}
+.legend .diamond{width:11px;height:11px;background:var(--milestone);transform:rotate(45deg)}
+.legend .dash{width:38px;border-top:2px dashed var(--red)}
+@media(max-width:1000px){.sidebar{width:145px;flex-basis:145px}.main{padding:14px}}
+
+/* V1.6 project summary */
+.summaryGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:12px;
+}
+.summaryCard{
+  background:#fff;
+  border:1px solid #e5edf6;
+  border-radius:13px;
+  min-height:96px;
+  padding:15px 18px;
+  box-shadow:0 4px 14px rgba(33,73,120,.05);
+}
+.summaryLabel{font-size:12px;color:#60738d;font-weight:600}
+.summaryValue{font-size:31px;line-height:1;font-weight:800;margin-top:12px;color:#11284a}
+.summaryCard:nth-child(2) .summaryValue{color:#1268f3}
+.summaryCard:nth-child(3) .summaryValue{color:#10a66a}
+.summaryCard:nth-child(4) .summaryValue{color:#ef4444}
+@media(max-width:900px){.summaryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* V1.7 compact metadata + sticky project name */
+.gantt th:nth-child(1),.gantt td:nth-child(1){
+  width:120px!important;min-width:120px!important;max-width:120px!important;
+  padding-left:10px!important;padding-right:8px!important;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.gantt th:nth-child(2),.gantt td:nth-child(2){
+  width:110px!important;min-width:110px!important;max-width:110px!important;
+  padding-left:8px!important;padding-right:8px!important;
+}
+.gantt th:nth-child(3),.gantt td:nth-child(3){
+  width:78px!important;min-width:78px!important;max-width:78px!important;
+}
+.gantt th:nth-child(4),.gantt td:nth-child(4){
+  width:62px!important;min-width:62px!important;max-width:62px!important;
+}
+
+/* Keep project name fixed while horizontally scrolling the timeline */
+.gantt th:nth-child(1),
+.gantt td:nth-child(1){
+  position:sticky!important;
+  left:0!important;
+  z-index:12!important;
+  background:#fff!important;
+  box-shadow:1px 0 0 #dfe8f3;
+}
+.gantt thead th:nth-child(1){
+  background:#eef5fb!important;
+  z-index:20!important;
+}
+
+/* Manager becomes text-only */
+.manager{
+  display:block!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.manager .avatar{display:none!important}
+
+</style>
+
+<style id="outer-shell-patch">
+.side,.sidebar{display:none!important}
+.app{display:block!important;width:100%!important;max-width:100%!important}
+.main{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important}
+html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">项目看板</div>
+    <div class="nav">
+      <a>▣ 交付项目</a>
+      <a class="active">▣ 复制项目</a>
+      <a>♙ 交付质量</a>
+      <a>♧ 展会项目</a>
+      <div class="group">数据中心</div>
+      <a>▣ 源数据</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="title">复制项目看板</div>
+      <div class="todayTop">今天：2026-09-12（周六）</div>
+    </div>
+    <section class="summaryGrid">
+      <div class="summaryCard"><div class="summaryLabel">项目总数</div><div class="summaryValue">11</div></div>
+      <div class="summaryCard"><div class="summaryLabel">进行中</div><div class="summaryValue">11</div></div>
+      <div class="summaryCard"><div class="summaryLabel">已完成</div><div class="summaryValue">0</div></div>
+      <div class="summaryCard"><div class="summaryLabel">中止</div><div class="summaryValue">0</div></div>
+    </section>
+
+    <section class="card">
+      <h2 class="cardTitle">项目进度总览（仅进行中项目）</h2>
+      <div class="tableWrap">
+        <table class="gantt">
+          <thead>
+            <tr>
+              <th>项目名称</th>
+              <th>项目经理</th>
+              <th>状态</th>
+              <th>进度</th>
+              <th><div id="timelineHeader" class="timelineHeader"></div></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="legend">
+        <span class="bar"></span><span>当前进度</span>
+        <span class="diamond"></span><span>里程碑节点</span>
+        <span class="dash"></span><span>今天（9/12）</span>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const projects=[{"name":"北京顺畅-010X","manager":"舒信Bruce","status":"进行中","progress":4,"start":"2026-09-10","end":"2026-10-30","milestones":[{"date":"2026-09-23","label":"结构设计","status":"进行中"},{"date":"2026-09-26","label":"设备调试","status":"未开始"},{"date":"2026-10-20","label":"数采训练","status":"未开始"},{"date":"2026-10-30","label":"交付验收","status":"未开始"}]},{"name":"北京顺畅-顺丰","manager":"舒信Bruce","status":"进行中","progress":10,"start":"2026-09-07","end":"2026-10-11","milestones":[{"date":"2026-09-20","label":"结构设计","status":"进行中"},{"date":"2026-10-05","label":"设备调试","status":"未开始"},{"date":"2026-10-09","label":"数采训练","status":"未开始"},{"date":"2026-10-11","label":"交付验收","status":"未开始"}]},{"name":"福州-顺丰","manager":"毛顺飞","status":"进行中","progress":12,"start":"2026-09-05","end":"2026-10-15","milestones":[{"date":"2026-09-20","label":"结构设计","status":"进行中"},{"date":"2026-10-05","label":"设备调试","status":"未开始"},{"date":"2026-10-08","label":"数采训练","status":"未开始"},{"date":"2026-10-15","label":"交付验收","status":"未开始"}]},{"name":"和记","manager":"于彪Galen","status":"进行中","progress":22,"start":"2026-09-07","end":"2026-09-30","milestones":[{"date":"2026-09-30","label":"交付验收","status":"进行中"}]},{"name":"嘉兴-中邮","manager":"司冉Vincent","status":"进行中","progress":55,"start":"2026-08-24","end":"2026-10-15","milestones":[{"date":"2026-09-06","label":"结构设计","status":"已完成"},{"date":"2026-09-21","label":"设备调试","status":"已完成"},{"date":"2026-09-24","label":"数采训练","status":"进行中"},{"date":"2026-10-15","label":"交付验收","status":"未开始"}]},{"name":"金华-顺丰","manager":"陈世翔","status":"进行中","progress":10,"start":"2026-09-07","end":"2026-10-11","milestones":[{"date":"2026-09-20","label":"结构设计","status":"进行中"},{"date":"2026-10-05","label":"设备调试","status":"未开始"},{"date":"2026-10-09","label":"数采训练","status":"未开始"},{"date":"2026-10-11","label":"交付验收","status":"未开始"}]},{"name":"晋江-顺丰","manager":"毛顺飞","status":"进行中","progress":14,"start":"2026-09-06","end":"2026-09-30","milestones":[{"date":"2026-09-28","label":"数采训练","status":"进行中"},{"date":"2026-09-30","label":"交付验收","status":"未开始"}]},{"name":"南京-顺丰","manager":"陈世翔","status":"进行中","progress":3,"start":"2026-09-10","end":"2026-10-18","milestones":[{"date":"2026-09-28","label":"结构设计","status":"进行中"},{"date":"2026-09-30","label":"设备调试","status":"未开始"},{"date":"2026-10-15","label":"数采训练","status":"未开始"},{"date":"2026-10-18","label":"交付验收","status":"未开始"}]},{"name":"莆田-顺丰","manager":"毛顺飞","status":"进行中","progress":7,"start":"2026-09-05","end":"2026-10-15","milestones":[{"date":"2026-09-30","label":"结构设计","status":"进行中"},{"date":"2026-10-15","label":"设备调试","status":"未开始"},{"date":"2026-10-08","label":"数采训练","status":"未开始"},{"date":"2026-10-15","label":"交付验收","status":"未开始"}]},{"name":"虾皮","manager":"陈世翔","status":"进行中","progress":19,"start":"2026-09-04","end":"2026-10-08","milestones":[{"date":"2026-09-18","label":"结构设计","status":"进行中"},{"date":"2026-10-03","label":"设备调试","status":"未开始"},{"date":"2026-10-08","label":"数采训练","status":"未开始"}]},{"name":"义乌-顺丰","manager":"陈世翔","status":"进行中","progress":7,"start":"2026-09-08","end":"2026-10-14","milestones":[{"date":"2026-09-23","label":"结构设计","status":"进行中"},{"date":"2026-10-08","label":"设备调试","status":"未开始"},{"date":"2026-10-12","label":"数采训练","status":"未开始"},{"date":"2026-10-14","label":"交付验收","status":"未开始"}]}];
+const start=new Date('2026-09-01T00:00:00');
+const end=new Date('2026-10-31T00:00:00');
+const totalDays=(end-start)/86400000;
+function pos(ds){
+  const d=new Date(ds+'T00:00:00');
+  return Math.max(0,Math.min(100,((d-start)/86400000)/totalDays*100));
+}
+function wd(d){return ['日','一','二','三','四','五','六'][d.getDay()]}
+const header=document.getElementById('timelineHeader');
+
+// Daily grid internally, but only show labels every 3 days + today + 10/31.
+for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){
+  const diff=Math.round((d-start)/86400000);
+  const isToday=d.getFullYear()===2026&&d.getMonth()===8&&d.getDate()===12;
+  const show=(diff%3===0)||isToday||(d.getMonth()===9&&d.getDate()===31);
+  if(!show) continue;
+  const x=diff/totalDays*100;
+  const div=document.createElement('div');
+  div.className='dateCell'+(isToday?' todayLabel':'');
+  div.style.left=x+'%';
+  div.innerHTML=`<b>${d.getMonth()+1}/${d.getDate()}</b><span>周${wd(d)}</span>`;
+  header.appendChild(div);
+}
+
+const todayPos=pos('2026-09-12');
+
+function initials(name){
+  if(!name||name==='—') return '—';
+  const m=name.match(/[A-Za-z]+$/);
+  return m?m[0].slice(0,2).toUpperCase():name.slice(0,2);
+}
+
+document.getElementById('rows').innerHTML=projects.map(p=>{
+  const projectStart=pos(p.start);
+  const projectEnd=pos(p.end);
+  const totalSpan=Math.max(1,projectEnd-projectStart);
+  const progressWidth=totalSpan*(p.progress/100);
+  const milestoneHtml=(p.milestones||[]).map(m=>{
+    const x=pos(m.date);
+    return `<span class="milestone" style="left:${x}%"></span>
+            <span class="milestoneLabel" style="left:${x}%"><b>${m.date.slice(5).replace('-','/')}</b><br>${m.label}</span>`;
+  }).join('');
+  return `<tr>
+    <td>${p.name}</td>
+    <td><div class="manager">${p.manager}</div></td>
+    <td><span class="status">进行中</span></td>
+    <td><span class="progressNum">${p.progress}%</span></td>
+    <td><div class="timeline">
+      <span class="todayLine" style="left:${todayPos}%"></span>
+      <span class="progressBar" style="left:${projectStart}%;width:${progressWidth}%"></span>
+      ${milestoneHtml}
+    </div></td>
+  </tr>`;
+}).join('');
+</script>
+</body>
+</html>

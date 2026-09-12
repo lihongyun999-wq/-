@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>交付质量周报·售后专项（9.7–9.11）</title>
+<style>
+:root {
+  --bg:#F8F6F0; --ink:#102A43; --text:#1D2733; --muted:#667085; --line:#E6E1D8;
+  --blue:#2978B5; --amber:#F59E0B; --green:#2F855A; --red:#C53030; --grey:#9AA5B1; --card:#FFFFFF;
+}
+* { box-sizing:border-box; }
+html,body { margin:0; padding:0; }
+body { background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+  line-height:1.6; -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1200px; margin:0 auto; padding:28px 22px 60px; }
+header.report-head { border-bottom:3px solid var(--ink); padding-bottom:18px; margin-bottom:22px; }
+.eyebrow { font-size:13px; letter-spacing:.14em; color:var(--blue); font-weight:700; text-transform:uppercase; }
+h1 { font-size:30px; color:var(--ink); margin:6px 0 8px; font-weight:800; }
+.sub { color:var(--muted); font-size:14px; } .sub b { color:var(--ink); }
+.kpis { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:22px 0; }
+.kpi { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+.kpi .v { font-size:27px; font-weight:800; color:var(--ink); line-height:1.1; font-variant-numeric:tabular-nums; }
+.kpi .l { font-size:12.5px; color:var(--muted); margin-top:4px; }
+.kpi .d { font-size:11.5px; margin-top:3px; font-weight:700; }
+.kpi.warn .v { color:var(--amber); } .kpi.bad .v { color:var(--red); } .kpi.good .v { color:var(--green); }
+.dn { color:var(--green); } .up { color:var(--red); }
+section { margin:30px 0; }
+h2 { font-size:19px; color:var(--ink); border-left:5px solid var(--amber); padding-left:11px; margin:0 0 14px; }
+h2 .en { font-size:12px; color:var(--muted); font-weight:400; margin-left:8px; }
+h3.sub-h { font-size:15px; color:var(--ink); margin:18px 0 10px; }
+h3.sub-h .no { display:inline-block; background:var(--ink); color:#fff; font-size:12px; border-radius:50%; width:22px; height:22px; line-height:22px; text-align:center; margin-right:8px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; }
+.card h3 { margin:0 0 10px; font-size:15.5px; color:var(--ink); }
+.note { font-size:12.5px; color:var(--muted); margin-top:8px; }
+.findings { display:grid; grid-template-columns:1fr; gap:14px; }
+.find { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; }
+.find .ft { display:flex; align-items:center; gap:8px; font-weight:700; color:var(--ink); font-size:15px; margin-bottom:8px; flex-wrap:wrap; }
+.find .ft .meta { font-size:12.5px; font-weight:400; color:var(--muted); }
+.find .split { display:grid; grid-template-columns:1.1fr 1fr; gap:18px; align-items:center; }
+.find ul { margin:6px 0 0; padding-left:18px; font-size:13.3px; }
+.find li { margin:5px 0; }
+.find p { margin:4px 0; font-size:13.3px; }
+.badge { font-size:12px; font-weight:800; padding:2px 9px; border-radius:20px; color:#fff; }
+.b-red { background:var(--red); } .b-amber { background:var(--amber); }
+table { border-collapse:collapse; width:100%; font-size:13px; }
+.table-scroll { overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--card); }
+th,td { padding:9px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:#F1EDE4; color:var(--ink); font-weight:700; font-size:12.5px; white-space:nowrap; }
+tbody tr:hover { background:#FBF9F4; }
+.c-num { color:var(--muted); width:40px; } .c-date { white-space:nowrap; font-weight:700; color:var(--ink); }
+.c-sn { white-space:nowrap; font-variant-numeric:tabular-nums; } .c-desc { min-width:220px; } .c-fix { min-width:160px; color:var(--muted); }
+.c-loc { white-space:nowrap; } .c-model { white-space:nowrap; color:var(--muted); }
+.c-prio { white-space:nowrap; }
+.tag { display:inline-block; font-size:12px; padding:1px 9px; border-radius:20px; font-weight:700; white-space:nowrap; }
+.st-closed { background:#E6F4EC; color:var(--green); }
+.st-doing { background:#FDEBD0; color:#B45309; }
+.st-watch { background:#E3F0FA; color:var(--blue); }
+.st-pend { background:#EDF0F3; color:var(--grey); }
+.pr-high { background:#FBE2E2; color:var(--red); } .pr-low { background:#EDF0F3; color:var(--muted); }
+.rbar { height:9px; background:#F1EDE4; border-radius:5px; margin-top:5px; min-width:90px; }
+.rbar-in { height:9px; border-radius:5px; }
+.owner { background:#E3F0FA; color:var(--blue); font-weight:700; padding:2px 10px; border-radius:20px; font-size:12.5px; white-space:nowrap; }
+.act-d { font-size:12px; color:var(--muted); font-weight:400; margin-top:3px; }
+caption { text-align:left; padding:14px 18px 6px; font-weight:700; color:var(--ink); font-size:14.5px; }
+table.proj-tbl { font-size:12.5px; }
+table.proj-tbl th,table.proj-tbl td { padding:8px 10px; }
+table.proj-tbl caption { padding:0 0 10px; font-size:14px; }
+footer { margin-top:34px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; }
+@media (max-width:960px) { .kpis{grid-template-columns:repeat(3,1fr);} .grid2,.find .split{grid-template-columns:1fr;} }
+@media (max-width:560px) { .kpis{grid-template-columns:repeat(2,1fr);} h1{font-size:23px;} }
+@media print { body{background:#fff;} .card,.kpi,.find{break-inside:avoid; border-color:#ddd;} .table-scroll{overflow:visible;} }
+</style>
+<style id="quality-shell-patch">
+html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+.wrap{max-width:1400px!important}
+</style>
+
+<style id="quality-bg-unify">
+:root{--bg:#eef4fb!important;}
+html,body{
+  background:linear-gradient(165deg,#e9f1fb,#f7faff 48%,#eef5fd)!important;
+  min-height:100%;
+}
+.wrap{
+  max-width:1400px!important;
+  padding:22px 22px 60px!important;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<main>
+<header class="report-head">
+  <div class="eyebrow">WEEKLY AFTER-SALES &amp; QUALITY REPORT</div>
+  <h1>交付质量周报·售后专项</h1>
+  <div class="sub">统计周期 <b>2026.9.7 – 9.13</b>（工作日 9.7–9.11）　|　统计口径：交付售后项目问题汇总表　|　覆盖：成都绛溪实验室（36 台在用 EX001）及深圳文旅、宁波数采、北京清华、武汉 POC 等项目</div>
+</header>
+
+<div class="kpis">
+  <div class="kpi bad"><div class="v">94</div><div class="l">本周新增问题（条）</div><div class="d up">▲ 68% 环比（上周 56 条）</div></div>
+  <div class="kpi"><div class="v">18.8</div><div class="l">工作日日均（条/天）</div><div class="d" style="color:var(--muted)">周五峰值 25 条</div></div>
+  <div class="kpi good"><div class="v">21</div><div class="l">已关闭（条）</div><div class="d dn">关闭率 22%</div></div>
+  <div class="kpi bad"><div class="v">73</div><div class="l">未关闭（条）</div><div class="d up">排查中 38 · 优化中 11 · 待版本 8 · 待观察 8 · 待复现 6</div></div>
+  <div class="kpi warn"><div class="v">35</div><div class="l">本周故障设备（台）</div><div class="d" style="color:var(--muted)">510 号 9 条最多</div></div>
+  <div class="kpi"><div class="v">45</div><div class="l">高优先级问题（条）</div><div class="d" style="color:var(--muted)">占本周问题 48%</div></div>
+</div>
+
+<section>
+  <h2>一、问题趋势<span class="en">TREND &amp; FUNNEL</span></h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>1. 每日问题发生件数</h3>
+      <svg viewBox="0 0 720 290" role="img" aria-label="每日新增问题趋势图" width="100%">
+<desc>折线图展示 9.7 至 9.11 每个工作日新增售后问题数：16、13、19、21、25 条，周内波动走高，周五 9.11 达到峰值 25 条，日均 18.8 条。</desc><title>每日新增问题趋势</title>
+<defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#F59E0B" stop-opacity="0.32"/><stop offset="1" stop-color="#F59E0B" stop-opacity="0.02"/>
+</linearGradient></defs>
+<line x1="48" y1="250.0" x2="696" y2="250.0" stroke="#E6E1D8" stroke-width="1"/><text x="38" y="254.0" text-anchor="end" font-size="12" fill="#667085">0</text><line x1="48" y1="176.7" x2="696" y2="176.7" stroke="#E6E1D8" stroke-width="1"/><text x="38" y="180.7" text-anchor="end" font-size="12" fill="#667085">10</text><line x1="48" y1="103.3" x2="696" y2="103.3" stroke="#E6E1D8" stroke-width="1"/><text x="38" y="107.3" text-anchor="end" font-size="12" fill="#667085">20</text><line x1="48" y1="30.0" x2="696" y2="30.0" stroke="#E6E1D8" stroke-width="1"/><text x="38" y="34.0" text-anchor="end" font-size="12" fill="#667085">30</text><line x1="48" y1="112.1" x2="696" y2="112.1" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="5,4"/><text x="696" y="106.1" text-anchor="end" font-size="11" fill="#94A3B8">日均 18.8 条</text><path d="M 48.0,132.7 L 210.0,154.7 L 372.0,110.7 L 534.0,96.0 L 696.0,66.7 L 696.0,250.0 L 48.0,250.0 Z" fill="url(#g1)"/><path d="M 48.0,132.7 L 210.0,154.7 L 372.0,110.7 L 534.0,96.0 L 696.0,66.7" fill="none" stroke="#F59E0B" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="48.0" cy="132.7" r="4.5" fill="#fff" stroke="#F59E0B" stroke-width="2.5"/><text x="48.0" y="120.7" text-anchor="middle" font-size="13" font-weight="700" fill="#102A43">16</text><circle cx="210.0" cy="154.7" r="4.5" fill="#fff" stroke="#F59E0B" stroke-width="2.5"/><text x="210.0" y="142.7" text-anchor="middle" font-size="13" font-weight="700" fill="#102A43">13</text><circle cx="372.0" cy="110.7" r="4.5" fill="#fff" stroke="#F59E0B" stroke-width="2.5"/><text x="372.0" y="98.7" text-anchor="middle" font-size="13" font-weight="700" fill="#102A43">19</text><circle cx="534.0" cy="96.0" r="4.5" fill="#fff" stroke="#F59E0B" stroke-width="2.5"/><text x="534.0" y="84.0" text-anchor="middle" font-size="13" font-weight="700" fill="#102A43">21</text><circle cx="696.0" cy="66.7" r="4.5" fill="#fff" stroke="#F59E0B" stroke-width="2.5"/><text x="696.0" y="54.7" text-anchor="middle" font-size="13" font-weight="700" fill="#102A43">25</text><text x="48.0" y="270" text-anchor="middle" font-size="12" fill="#1D2733" font-weight="600">9.7</text><text x="48.0" y="286" text-anchor="middle" font-size="11" fill="#9AA5B1">周一</text><text x="210.0" y="270" text-anchor="middle" font-size="12" fill="#1D2733" font-weight="600">9.8</text><text x="210.0" y="286" text-anchor="middle" font-size="11" fill="#9AA5B1">周二</text><text x="372.0" y="270" text-anchor="middle" font-size="12" fill="#1D2733" font-weight="600">9.9</text><text x="372.0" y="286" text-anchor="middle" font-size="11" fill="#9AA5B1">周三</text><text x="534.0" y="270" text-anchor="middle" font-size="12" fill="#1D2733" font-weight="600">9.10</text><text x="534.0" y="286" text-anchor="middle" font-size="11" fill="#9AA5B1">周四</text><text x="696.0" y="270" text-anchor="middle" font-size="12" fill="#1D2733" font-weight="600">9.11</text><text x="696.0" y="286" text-anchor="middle" font-size="11" fill="#9AA5B1">周五</text>
+<text x="48" y="18" font-size="12" fill="#667085">单位：条</text>
+</svg>
+      <div class="note">售后问题量周内波动走高（16→13→19→21→25），周五 9.11 单日 25 条创峰值，环比上周（56 条）上升 68%，需关注是否与客户切换新数采平台及掉臂专项问题集中暴露有关。</div>
+    </div>
+    <div class="card">
+      <h3>2. 问题处理漏斗</h3>
+      <svg viewBox="0 0 760 366" role="img" aria-label="问题处理漏斗图" width="100%"><title>问题处理漏斗</title><desc>漏斗图：本周 94 条售后问题，FAE 现场处理 89 条（95%）：彻底闭环 23 条（换件/升版本/关平台，根因现场消除，其中已关闭 16、已优化待观察 7）；现场临时策略恢复、转研发分析根因 66 条（重启/清码/拍急停/Docker恢复/现场无法解决）；客户处理 5 条（客户自行恢复且已终结），现场终结、不转研发。流转至研发共 66 条（70%），研发侧状态为根因排查或优化中 49、已关闭或待观察 3、待升级2.12版本验证 8、待复现 6。</desc><defs>
+<linearGradient id="fBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B8AD9"/><stop offset="1" stop-color="#1F5C99"/></linearGradient>
+<linearGradient id="fGreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3CA370"/><stop offset="1" stop-color="#26734D"/></linearGradient>
+<linearGradient id="fBrown" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D08A3E"/><stop offset="1" stop-color="#9C5A1E"/></linearGradient>
+<linearGradient id="fOrange" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7B943"/><stop offset="1" stop-color="#E08A0C"/></linearGradient>
+<linearGradient id="fSlate" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6B86B0"/><stop offset="1" stop-color="#48608F"/></linearGradient>
+<filter id="fSh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#102A43" flood-opacity="0.15"/></filter>
+<clipPath id="l4clip"><rect x="120" y="302" width="520" height="32" rx="6"/></clipPath>
+</defs><polygon points="120,8 640,8 606,50 154,50" fill="url(#fBlue)" filter="url(#fSh)"/><text x="380.0" y="27" text-anchor="middle" font-size="13.5" font-weight="600" fill="#FFFFFF">所有问题（本周新增）</text><text x="380.0" y="45" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">94 条</text><path d="M 200,50 C 200,62 192,62 192,70" fill="none" stroke="#9FB3C8" stroke-width="1.8"/><polygon points="187.5,65 196.5,65 192.0,74" fill="#9FB3C8"/><path d="M 560,50 C 560,62 568,62 568,70" fill="none" stroke="#9FB3C8" stroke-width="1.8"/><polygon points="563.5,65 572.5,65 568.0,74" fill="#9FB3C8"/><rect x="22" y="74" width="340" height="154" rx="10" fill="#F0F7F3" stroke="#BBDDC9" stroke-width="1.2"/><path d="M32,74 H352 A10,10 0 0 1 362,84 V102 H22 V84 A10,10 0 0 1 32,74 Z" fill="url(#fGreen)"/><text x="192" y="93" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">FAE 现场处理 · 89 条（95%）</text><rect x="36" y="108" width="312" height="50" rx="7" fill="url(#fGreen)" filter="url(#fSh)"/><rect x="276" y="116" width="62" height="17" rx="9" fill="#FFFFFF" fill-opacity="0.22"/><text x="307" y="124" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">现场根除</text><text x="192" y="123.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">① FAE 彻底闭环</text><text x="192" y="139" text-anchor="middle" font-size="17" font-weight="800" fill="#fff">23 条</text><text x="192" y="152" text-anchor="middle" font-size="8.5" font-weight="600" fill="#EAF5EE">已关闭 16 · 待观察 7（根因现场消除）</text><rect x="36" y="166" width="312" height="50" rx="7" fill="url(#fBrown)" filter="url(#fSh)"/><rect x="276" y="174" width="62" height="17" rx="9" fill="#FFFFFF" fill-opacity="0.22"/><text x="307" y="186.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">转研发跟踪</text><text x="192" y="181.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">② 现场临时策略恢复</text><text x="192" y="193" text-anchor="middle" font-size="9.5" font-weight="600" fill="#F6E7D8">转研发分析根因</text><text x="192" y="211" text-anchor="middle" font-size="17" font-weight="800" fill="#fff">66 条</text><rect x="398" y="74" width="340" height="154" rx="10" fill="#F2F5FA" stroke="#C3CFE0" stroke-width="1.2"/><path d="M408,74 H728 A10,10 0 0 1 738,84 V102 H398 V84 A10,10 0 0 1 408,74 Z" fill="url(#fSlate)"/><text x="568" y="93" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">客户处理 · 5 条（5%）</text><rect x="412" y="122" width="312" height="78" rx="7" fill="url(#fSlate)" filter="url(#fSh)"/><text x="568" y="153" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">③ 客户自行 / 非问题</text><text x="568" y="180" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">5 条</text><text x="568" y="194" text-anchor="middle" font-size="9.5" fill="#E8EEF7">客户自行恢复 · 已终结（磁盘满/撞击/误报等）</text><rect x="484" y="202" width="168" height="19" rx="10" fill="none" stroke="#9FB3C8" stroke-width="1.2"/><text x="568" y="215" text-anchor="middle" font-size="10.5" font-weight="700" fill="#48608F">现场终结 · 不转研发</text><path d="M 192,228 C 192,234 380,234 380,242" fill="none" stroke="#E8B25A" stroke-width="1.8"/><polygon points="375.5,237 384.5,237 380.0,246" fill="#E8B25A"/><polygon points="180,242 580,242 550,282 210,282" fill="url(#fOrange)" filter="url(#fSh)"/><text x="380.0" y="259" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">流转至研发处理（含现场恢复根因 66 条）</text><text x="380.0" y="275" text-anchor="middle" font-size="15.5" font-weight="800" fill="#fff">占本周问题 70%</text><text x="120" y="293" font-size="12" font-weight="700" fill="#102A43">研发侧 66 条状态分布</text><g clip-path="url(#l4clip)"><rect x="120.0" y="302" width="386.1" height="32" fill="#C53030"/><text x="313.0" y="317" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff">49 条</text><text x="313.0" y="329" text-anchor="middle" font-size="8.6" fill="#fff">根因排查/优化中</text><rect x="506.1" y="302" width="23.6" height="32" fill="#2F855A"/><rect x="529.7" y="302" width="63.0" height="32" fill="#2978B5"/><rect x="592.7" y="302" width="47.3" height="32" fill="#9AA5B1"/></g><rect x="120" y="302" width="520" height="32" rx="6" fill="none" stroke="#FFFFFF" stroke-width="1.5"/><rect x="120" y="342" width="11" height="11" rx="2" fill="#C53030"/><text x="136" y="352" font-size="11" fill="#1D2733">根因排查/优化中 49</text><rect x="282.5" y="342" width="11" height="11" rx="2" fill="#2F855A"/><text x="298.5" y="352" font-size="11" fill="#1D2733">研发已关闭/待观察 3</text><rect x="445.0" y="342" width="11" height="11" rx="2" fill="#2978B5"/><text x="461.0" y="352" font-size="11" fill="#1D2733">待升级2.12验证 8</text><rect x="607.5" y="342" width="11" height="11" rx="2" fill="#9AA5B1"/><text x="623.5" y="352" font-size="11" fill="#1D2733">待复现 6</text></svg>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>二、问题结构分析<span class="en">STRUCTURE</span></h2>
+  <div class="grid2" style="grid-template-columns:1fr 1.05fr; align-items:stretch;">
+    <div class="card">
+      <h3>① 问题分类（全部项目 94 条）</h3>
+      <svg viewBox="0 0 700 244" role="img" aria-label="本周售后问题分类（全部项目）" width="100%"><title>本周售后问题分类（全部项目）</title><desc>横向条形图：本周 94 条售后问题按二级标签归并，掉臂/通讯类 32 条居首，网络/画面延迟 14 条、夹爪故障 11 条、软件系统BUG 10 条。</desc><text x="118" y="22" text-anchor="end" font-size="11.5" fill="#1D2733">掉臂/通讯类</text><rect x="130" y="8" width="250.0" height="20" rx="4" fill="#F59E0B"/><text x="388.0" y="22" font-size="11.5" font-weight="700" fill="#102A43">32</text><text x="118" y="51" text-anchor="end" font-size="11.5" fill="#1D2733">网络/画面延迟</text><rect x="130" y="37" width="109.4" height="20" rx="4" fill="#2978B5"/><text x="247.4" y="51" font-size="11.5" font-weight="700" fill="#102A43">14</text><text x="118" y="80" text-anchor="end" font-size="11.5" fill="#1D2733">其他</text><rect x="130" y="66" width="93.8" height="20" rx="4" fill="#2978B5"/><text x="231.8" y="80" font-size="11.5" font-weight="700" fill="#102A43">12</text><text x="118" y="109" text-anchor="end" font-size="11.5" fill="#1D2733">夹爪故障</text><rect x="130" y="95" width="85.9" height="20" rx="4" fill="#2978B5"/><text x="223.9" y="109" font-size="11.5" font-weight="700" fill="#102A43">11</text><text x="118" y="138" text-anchor="end" font-size="11.5" fill="#1D2733">软件/系统BUG</text><rect x="130" y="124" width="78.1" height="20" rx="4" fill="#2978B5"/><text x="216.1" y="138" font-size="11.5" font-weight="700" fill="#102A43">10</text><text x="118" y="167" text-anchor="end" font-size="11.5" fill="#1D2733">摄像头/画面</text><rect x="130" y="153" width="62.5" height="20" rx="4" fill="#2978B5"/><text x="200.5" y="167" font-size="11.5" font-weight="700" fill="#102A43">8</text><text x="118" y="196" text-anchor="end" font-size="11.5" fill="#1D2733">机械臂异常抖动</text><rect x="130" y="182" width="46.9" height="20" rx="4" fill="#2978B5"/><text x="184.9" y="196" font-size="11.5" font-weight="700" fill="#102A43">6</text><text x="118" y="225" text-anchor="end" font-size="11.5" fill="#1D2733">手柄/按键</text><rect x="130" y="211" width="7.8" height="20" rx="4" fill="#2978B5"/><text x="145.8" y="225" font-size="11.5" font-weight="700" fill="#102A43">1</text></svg>
+      <div class="note">按二级标签归并：<b>掉臂/通讯类 32 条居首</b>（占 34%），网络/画面延迟 14 条、夹爪故障 11 条、软件/系统 BUG 10 条为主线；摄像头/画面 8 条、机械臂异常抖动 6 条；高优先级 45 条中 26 条集中在掉臂/通讯。</div>
+    </div>
+    <div class="card" style="display:flex; flex-direction:column;">
+      <table class="proj-tbl">
+        <caption>② 项目问题分析（投入设备 × 带故障运行设备占比）</caption>
+        <thead><tr>
+          <th>项目</th><th style="text-align:center">投入设备</th><th style="text-align:center">本周问题</th>
+          <th style="text-align:center">出故障设备</th><th style="text-align:center;width:170px">带故障运行设备占比</th>
+        </tr></thead>
+        <tbody><tr>
+<td class="c-loc"><b>成都绛溪实验室</b></td>
+<td style="text-align:center">36 台</td>
+<td style="text-align:center"><b>90</b> 条</td>
+<td style="text-align:center">33 台</td>
+<td style="text-align:center;white-space:nowrap"><b style="color:var(--red)">92%</b><div class="rbar"><div class="rbar-in" style="width:92%;background:#C53030"></div></div></td></tr>
+<tr>
+<td class="c-loc"><b>深圳文旅</b></td>
+<td style="text-align:center">8 台</td>
+<td style="text-align:center"><b>1</b> 条</td>
+<td style="text-align:center">1 台</td>
+<td style="text-align:center;white-space:nowrap"><b style="color:var(--amber)">12.5%</b><div class="rbar"><div class="rbar-in" style="width:12.5%;background:#F59E0B"></div></div></td></tr>
+<tr>
+<td class="c-loc"><b>宁波数采基地</b></td>
+<td style="text-align:center">10 台</td>
+<td style="text-align:center"><b>1</b> 条</td>
+<td style="text-align:center">1 台</td>
+<td style="text-align:center;white-space:nowrap"><b style="color:var(--amber)">10%</b><div class="rbar"><div class="rbar-in" style="width:10%;background:#F59E0B"></div></div></td></tr>
+<tr>
+<td class="c-loc"><b>武汉 lululemon 仓 POC</b></td>
+<td style="text-align:center">4 台</td>
+<td style="text-align:center"><b>1</b> 条</td>
+<td style="text-align:center">1 台</td>
+<td style="text-align:center;white-space:nowrap"><b style="color:var(--amber)">25%</b><div class="rbar"><div class="rbar-in" style="width:25%;background:#F59E0B"></div></div></td></tr></tbody>
+      </table>
+      <div class="note" style="margin-top:auto">本周问题高度集中于成都绛溪实验室：90 条（占全周 96%），36 台在用设备中 <b style="color:var(--red)">33 台出故障并仍在运行，带故障运行设备占比 92%</b>；其余 3 条分散于深圳文旅、宁波数采基地、武汉 lululemon 仓 POC，各 1 条。</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>三、重点问题专项分析<span class="en">KEY ISSUE REVIEW</span></h2>
+  <div class="findings">
+
+    <div class="find">
+      <div class="ft"><span class="badge b-red">问题最多 · 高优集中</span>掉臂 / 红绿灯通讯异常专项
+        <span class="meta">32 条（含主从断联）· 波及 15 台 · 26 条高优</span></div>
+      <p style="margin:6px 0 2px;font-size:13.5px;">统一表现为<b>双臂红绿灯闪烁、底盘板/身体板通讯断连、掉臂</b>，现场均靠<b>拍急停扶正 + 清除错误码</b>恢复，根因仍在研发侧；510 号单台 9 条为高发机，515、536 号各 4 条，531、467 号反复出现。</p>
+      <div class="split">
+        <div>
+          <h3 style="font-size:14px;margin:0 0 4px;">本周问题分类（成都 90 条）</h3>
+          <svg viewBox="0 0 700 244" role="img" aria-label="成都绛溪实验室本周问题分类" width="100%"><title>成都绛溪实验室本周问题分类</title><desc>横向条形图：成都绛溪实验室本周 90 条问题按根因归并，掉臂/通讯类 31 条居首，网络画面延迟 14 条、夹爪故障 11 条。</desc><text x="118" y="22" text-anchor="end" font-size="11.5" fill="#1D2733">掉臂/通讯类</text><rect x="130" y="8" width="215.0" height="20" rx="4" fill="#F59E0B"/><text x="353.0" y="22" font-size="11.5" font-weight="700" fill="#102A43">31</text><text x="118" y="51" text-anchor="end" font-size="11.5" fill="#1D2733">网络/画面延迟</text><rect x="130" y="37" width="97.1" height="20" rx="4" fill="#2978B5"/><text x="235.1" y="51" font-size="11.5" font-weight="700" fill="#102A43">14</text><text x="118" y="80" text-anchor="end" font-size="11.5" fill="#1D2733">夹爪故障</text><rect x="130" y="66" width="76.3" height="20" rx="4" fill="#2978B5"/><text x="214.3" y="80" font-size="11.5" font-weight="700" fill="#102A43">11</text><text x="118" y="109" text-anchor="end" font-size="11.5" fill="#1D2733">软件/系统BUG</text><rect x="130" y="95" width="69.4" height="20" rx="4" fill="#2978B5"/><text x="207.4" y="109" font-size="11.5" font-weight="700" fill="#102A43">10</text><text x="118" y="138" text-anchor="end" font-size="11.5" fill="#1D2733">其他</text><rect x="130" y="124" width="69.4" height="20" rx="4" fill="#2978B5"/><text x="207.4" y="138" font-size="11.5" font-weight="700" fill="#102A43">10</text><text x="118" y="167" text-anchor="end" font-size="11.5" fill="#1D2733">摄像头/画面</text><rect x="130" y="153" width="55.5" height="20" rx="4" fill="#2978B5"/><text x="193.5" y="167" font-size="11.5" font-weight="700" fill="#102A43">8</text><text x="118" y="196" text-anchor="end" font-size="11.5" fill="#1D2733">机械臂异常抖动</text><rect x="130" y="182" width="34.7" height="20" rx="4" fill="#2978B5"/><text x="172.7" y="196" font-size="11.5" font-weight="700" fill="#102A43">5</text><text x="118" y="225" text-anchor="end" font-size="11.5" fill="#1D2733">手柄/按键</text><rect x="130" y="211" width="6.9" height="20" rx="4" fill="#2978B5"/><text x="144.9" y="225" font-size="11.5" font-weight="700" fill="#102A43">1</text></svg>
+        </div>
+        <ul>
+          <li><b>掉臂/通讯 31 条</b>：主臂掉臂 17、从臂掉臂 7、主从断联 6、无响应/无法归零 2，现场临时恢复后全部转研发。</li>
+          <li><b>网络/画面延迟 14 条</b>：客户切换新数采平台后 webui 延迟暴增，研发建议先改造散热再排查。</li>
+          <li><b>机械臂抖动 5 条</b>：现场无法解决，研发已挑机测试，疑似头部电机问题。</li>
+          <li>主从断联 6 条（电机通讯丢失/机器断开连接）进展已统一标注"合入掉臂专项解决"。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="ft"><span class="badge b-amber">版本待验证</span>webui 画面延迟 / 数采链路阻断
+        <span class="meta">网络延迟 14 条 · 数采链路/录制 7 条 · 多条绑定 2.12 版本</span></div>
+      <ul>
+        <li><b>webui 画面延迟 14 条</b>：8 条仍在根因排查，多台机器（326/467/489/471/582/597 等）反映与客户新数采平台相关；其中 1 条已定位为新机未做 30W 限速，升级版本闭环。</li>
+        <li><b>数采链路阻断 / 无法录制 7 条</b>：开启录制报错已修复（02.12 解决），数采链路阻断 6 条、无法结束录制 1 条，通过重启 application 容器临时恢复，<b>待 2.12 版本发布后统一验证</b>。</li>
+        <li><b>现场临时恢复占比高</b>：清除错误码 24 条、重启整机 10 条、重启 Docker 4 条，均为"现场可用、根因待研发"，需通过专项与版本升级压降复发。</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>四、下周待办<span class="en">ACTION ITEMS</span></h2>
+  <div class="table-scroll">
+  <table>
+    <caption>下周待办清单（责任到人）</caption>
+    <thead><tr>
+      <th class="c-num">#</th><th>待办事项</th><th style="text-align:center">责任人</th><th style="text-align:center">配合方</th><th style="text-align:center">截止日期</th>
+    </tr></thead>
+    <tbody><tr>
+<td class="c-num">1</td>
+<td><b>掉臂/红绿灯通讯专项根因闭环</b><div class="act-d">本周掉臂/通讯 32 条、波及 15 台（510 号 9 条最多），统一表现为双臂红绿灯闪烁、底盘板/身体板断连，现场靠拍急停+清码恢复；主从断联 6 条已并入专项，需定位通讯链路根因并出固件修复。</div></td>
+<td style="white-space:nowrap;text-align:center"><span class="owner">@夏梓昊</span></td>
+<td style="white-space:nowrap;text-align:center;color:var(--muted)">动力系统/硬件 · 陈阳、罗宏现场</td>
+<td style="white-space:nowrap;text-align:center"><b>9.24 前</b></td></tr><tr>
+<td class="c-num">2</td>
+<td><b>webui 画面延迟定位（客户新平台适配）</b><div class="act-d">客户切换新数采平台后 webui 延迟暴增，本周 14 条、8 条仍在根因排查；研发建议先改造散热再排查链路，需完成散热整改与平台侧配置核查并回归。</div></td>
+<td style="white-space:nowrap;text-align:center"><span class="owner">@夏梓昊</span></td>
+<td style="white-space:nowrap;text-align:center;color:var(--muted)">系统软件 · 陈阳、罗宏</td>
+<td style="white-space:nowrap;text-align:center"><b>9.26 前</b></td></tr><tr>
+<td class="c-num">3</td>
+<td><b>2.12 版本发布与 36 台全量回归</b><div class="act-d">数采链路阻断/无法录制 7 条与其余软件问题绑定 2.12 版本（录制报错已修复），版本发布后成都 36 台统一升级并全量回归。</div></td>
+<td style="white-space:nowrap;text-align:center"><span class="owner">@夏梓昊</span></td>
+<td style="white-space:nowrap;text-align:center;color:var(--muted)">研发版本 · 陈阳、罗宏</td>
+<td style="white-space:nowrap;text-align:center"><b>9.20 前</b></td></tr><tr>
+<td class="c-num">4</td>
+<td><b>夹爪/摄像头线束标准作业固化</b><div class="act-d">夹爪开合/硬件异常 11 条、摄像头黑屏 8 条，多为线束松动（点胶/换线/换电机现场闭环）；将点胶加固、线缆更换固化为标准作业并补齐备件。</div></td>
+<td style="white-space:nowrap;text-align:center"><span class="owner">@陈阳</span> <span class="owner">@罗宏</span></td>
+<td style="white-space:nowrap;text-align:center;color:var(--muted)">硬件 · @梁欣怡备件</td>
+<td style="white-space:nowrap;text-align:center"><b>9.30 前</b></td></tr><tr>
+<td class="c-num">5</td>
+<td><b>机械臂抖动（达妙头部电机）验证</b><div class="act-d">异常抖动 6 条现场无法解决，研发已挑机测试修复，后续可能更换达妙头部电机；需完成修复方案验证并明确电机更换范围。</div></td>
+<td style="white-space:nowrap;text-align:center"><span class="owner">@夏梓昊</span></td>
+<td style="white-space:nowrap;text-align:center;color:var(--muted)">动力系统</td>
+<td style="white-space:nowrap;text-align:center"><b>9.30 前</b></td></tr></tbody>
+  </table>
+  </div>
+  <div class="note" style="margin-top:8px">流入研发类问题根因分析由 <b>@夏梓昊</b> 统筹；现场 FAE 由陈阳、罗宏承接。截止日期为建议值，可按研发排期调整。</div>
+</section>
+
+<footer>
+  生成日期：2026-09-12。统计口径：飞书《交付售后项目问题汇总表》（本周窗口 9.7–9.11，共 94 条）。
+</footer>
+</main>
+</div>
+</body>
+</html>
