@@ -19,3 +19,5 @@ GitHub / Railway 部署说明：
 注意：
 - 不需要 index V1.2.html、indexV3.1.html 等历史入口文件。
 - Railway 网站入口必须是根目录 index.html。
+
+更新：当前日期/今天标记更新为 2026-09-14。交付质量周报仍保持原统计周期 9.7-9.11。

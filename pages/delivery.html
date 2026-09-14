@@ -147,7 +147,7 @@ calendarHeadEl.innerHTML=`<div class="calendar">${days.join('')}</div>`;
 const MONTH_START=new Date('2026-09-01T00:00:00');
 const MONTH_END=new Date('2026-12-30T00:00:00');
 const SPAN=(MONTH_END-MONTH_START)/86400000;
-const TODAY=new Date('2026-09-12T00:00:00');
+const TODAY=new Date('2026-09-14T00:00:00');
 function pos(ds){const x=new Date(ds+'T00:00:00');return Math.max(0,Math.min(100,((x-MONTH_START)/86400000)/SPAN*100))}
 function statusClass(s){return s==='进行中'?'srun':s==='待部署'?'swait':'spending'}
 
@@ -156,9 +156,9 @@ ganttBodyEl.innerHTML=D.gantt.map(p=>{
   if(p.start && p.end){
     const left=pos(p.start), right=pos(p.end), width=Math.max(3,right-left+100/121);
     const cls=(p.status==='进行中'||p.status==='待部署')?'':'pending';
-    timeline=`<div class="timeline"><i class="today" style="left:${pos('2026-09-12')}%"></i><span class="bar ${cls}" style="left:${left}%;width:${width}%"></span></div>`;
+    timeline=`<div class="timeline"><i class="today" style="left:${pos('2026-09-14')}%"></i><span class="bar ${cls}" style="left:${left}%;width:${width}%"></span></div>`;
   } else {
-    timeline=`<div class="timeline"><i class="today" style="left:${pos('2026-09-12')}%"></i><span class="nodate">计划时间待补充</span></div>`;
+    timeline=`<div class="timeline"><i class="today" style="left:${pos('2026-09-14')}%"></i><span class="nodate">计划时间待补充</span></div>`;
   }
   return `<tr>
     <td>${p.name}</td>
